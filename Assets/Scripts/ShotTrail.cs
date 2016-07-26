@@ -8,24 +8,24 @@ public class ShotTrail : MonoBehaviour {
     [SerializeField] GameObject impactEffect = null;                  // This particle is created after every collision.
 
     BlasterManager arm;                                               // Reference to the BlasterManager configurations.
-    Controller2D player;                                              // Reference to the Controller2D configurations.                                            
+    Controller2D playerController;                                    // Reference to the Controller2D configurations.                                            
     Vector2 direction;                                                // Used to hold changes made to the x and y axis.
 
     void Start() {
         // Obtains the components from the Controller2D and BlasterManager Script.
-        player = FindObjectOfType<Controller2D>();    
+        playerController = FindObjectOfType<Controller2D>();    
         arm = FindObjectOfType<BlasterManager>();
 
         // Checks to see if the Player's arm has not rotated or if the Player isn't holding up or down.
         if (arm.transform.localRotation.z == 0.0f && Input.GetAxisRaw("VerticalMove") == 0) {
             // Checks to see if the Player is moving/facing right.
-            if (player.transform.localScale.x > 0) {
+            if (playerController.transform.localScale.x > 0) {
                 // Used to make the Player shoot towards the right.
                 direction = new Vector2(shotSpeed, 0);                       
             }
 
             // Checks to see if the Player is moving/facing left.
-            if (player.transform.localScale.x < 0) {
+            if (playerController.transform.localScale.x < 0) {
                 // Used to make the Player shoot towards the left.
                 direction = new Vector2(-shotSpeed, 0);                       
             }            
@@ -66,7 +66,7 @@ public class ShotTrail : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        // If the shot Prefab collides with anything that triggers it, destroy it.
+        // If the shot Prefab collides with anything else that triggers it, destroy it.
         Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(gameObject);
     } 

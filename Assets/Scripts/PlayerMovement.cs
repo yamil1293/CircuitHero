@@ -41,12 +41,7 @@ public class PlayerMovement : MonoBehaviour {
     Controller2D controller;                                            // Reference to the Controller2D configurations. 
  
              
-    float lockingAllAirDashes = 0;                                      // Used to limit the Player's air dashing amount. 
-
-
-    [SerializeField] float knockback = 0.0f;
-    [SerializeField] float knockbackLength = 0.0f;
-   
+    // float lockingAllAirDashes = 0;                                   // Used to limit the Player's air dashing amount. 
 
 
     void Start() {
@@ -159,7 +154,7 @@ public class PlayerMovement : MonoBehaviour {
                 }
 
                 // Resets air dash counter as the Player is on a wall.
-                lockingAllAirDashes = 0;
+                // lockingAllAirDashes = 0;
 
                 // Prevents the Player from dashjumping by this point.
                 if (!Input.GetButton("Dash")) {
@@ -173,7 +168,7 @@ public class PlayerMovement : MonoBehaviour {
                 velocity.y = maximumJumpVelocity;
 
                 // Resets air dash counter as the Player lands on the ground.
-                lockingAllAirDashes = 0;
+                // lockingAllAirDashes = 0;
 
                 // Prevents the Player from dashjumping by this point.
                 if (!Input.GetButton("Dash")) {
@@ -190,7 +185,7 @@ public class PlayerMovement : MonoBehaviour {
             }
 
             // Resets air dash counter as the Player lands on the ground.
-            lockingAllAirDashes = 0;
+            // lockingAllAirDashes = 0;
             // Prevents the Player from dashjumping by this point.
             if (!Input.GetButton("Dash")) {
                 lockingAllDashJumping++;

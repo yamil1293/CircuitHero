@@ -1,61 +1,79 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (Controller2D))]
-public class PlayerMovementWithKnockback : MonoBehaviour {
+[RequireComponent(typeof(Controller2D))]
+public class PlayerMovementWithKnockback : MonoBehaviour
+{
 
     [Header("Regular Movement")]
-    [SerializeField] float moveSpeed = 7.0f;                            // The speed the player can travel in the x axis.
-    
+    [SerializeField]
+    float moveSpeed = 7.0f;                            // The speed the player can travel in the x axis.
+    [SerializeField]
+    float knockbackSpeed = 0.0f;                    // The speed the Player gets knockedback in the x & y-axis.
+
     [Header("Jump Movement")]
-    [SerializeField] float minJumpHeight = 0f;                          // Set the minimum distance of how far the Player can jump.
-    [SerializeField] float maxJumpHeight = 3.5f;                        // Set the maximum distance of how far the Player can jump.
-    [SerializeField] float timeToJumpApex = .4f;                        // Set the time needed to reach the jump's heighest point.   
+    [SerializeField]
+    float minJumpHeight = 0f;                          // Set the minimum distance of how far the Player can jump.
+    [SerializeField]
+    float maxJumpHeight = 3.5f;                        // Set the maximum distance of how far the Player can jump.
+    [SerializeField]
+    float timeToJumpApex = .4f;                        // Set the time needed to reach the jump's heighest point.   
 
     [Header("Wall Jump Movement")]
-    [SerializeField] Vector2 wallJumpClimb = new Vector2(7.5f,16f);     // Set the speed when the Player is climbing walls.
-    [SerializeField] Vector2 wallJumpOff = new Vector2(8.5f,7f);        // Set the distance when the Player taps away from the wall.
-    [SerializeField] Vector2 wallLeap = new Vector2(18f,17f);           // Set the distance when the Player jumps away from the wall.
-    [SerializeField] float wallSlideSpeedMax = 3;                       // Sets the limit of how fast the Player slides down walls.
-    [SerializeField] float wallStickTime = .25f;                        // Sets how long the Player sticks on walls before sliding down.
-   
+    [SerializeField]
+    Vector2 wallJumpClimb = new Vector2(7.5f, 16f);     // Set the speed when the Player is climbing walls.
+    [SerializeField]
+    Vector2 wallJumpOff = new Vector2(8.5f, 7f);        // Set the distance when the Player taps away from the wall.
+    [SerializeField]
+    Vector2 wallLeap = new Vector2(18f, 17f);           // Set the distance when the Player jumps away from the wall.
+    [SerializeField]
+    float wallSlideSpeedMax = 3;                       // Sets the limit of how fast the Player slides down walls.
+    [SerializeField]
+    float wallStickTime = .25f;                        // Sets how long the Player sticks on walls before sliding down.
+
     [Header("Dash Movement")]
-    [SerializeField] float timeHeld = 0.0f;                             // Used as a timer/counter for the Player's dash.
-    [SerializeField] float timeForFullDash = 0.3f;                      // Used as a limiter for the Player's dash.
-    [SerializeField] float dashDistance = 10;                           // Multiplies the amount of force used for the dash.
-    [SerializeField] float minDashForce = 0.0f;                         // Calculates the minimum distance force to dash.
-    [SerializeField] float maxDashForce = 2.0f;                         // Calculates the maximum distance force to dash.
-         
+    [SerializeField]
+    float timeHeld = 0.0f;                             // Used as a timer/counter for the Player's dash.
+    [SerializeField]
+    float timeForFullDash = 0.3f;                      // Used as a limiter for the Player's dash.
+    [SerializeField]
+    float dashDistance = 10;                           // Multiplies the amount of force used for the dash.
+    [SerializeField]
+    float minDashForce = 0.0f;                         // Calculates the minimum distance force to dash.
+    [SerializeField]
+    float maxDashForce = 2.0f;                         // Calculates the maximum distance force to dash.
+
     float gravity;                                                      // Provides calculations for jumping and wall movement.  
     Vector3 velocity;                                                   // Moves the Player through the x and y-axis.  
     float maximumJumpVelocity;                                          // Calculates the minimum distance to jump.
     float minimumJumpVelocity;                                          // Calculates the maximum distance to jump.
     float velocityXSmoothing;                                           // Provides a gradual speed for the Player's x-axis. 
     float accelerationTimeInTheAir = .1f;                               // Used for calculating velocity in the x axis on the air.
-    float accelerationTimeOnTheGround =.1f;                             // Used for calculating velocity in the x axis on the ground. 
+    float accelerationTimeOnTheGround = .1f;                            // Used for calculating velocity in the x axis on the ground. 
     float timeToWallUnstick;                                            // Sets how long until the Player starts sliding. 
     float horizontalDashJumpForce;                                      // Calculates the distance possible for dashjumping.
     float dashJumpCoverage;                                             // Used for calculating the actual dashjumping.
     float lockingAllDashJumping = 0;                                    // Used to prevent any sort of mid-air dashjumping.
-        
+
     Controller2D controller;                                            // Reference to the Controller2D configurations. 
- 
-             
-    float lockingAllAirDashes = 0;                                      // Used to limit the Player's air dashing amount. 
+    PlayerStatus2 knockbackController;                                   // Reference to the PlayerStatus configurations.
+
+    /// <summary>
+    /// 
+    /// </summary>                 
+    //float lockingAllAirDashes = 0;                                      // Used to limit the Player's air dashing amount. 
+    /// <summary>
+    /// 
+    /// </summary>
 
 
-    [SerializeField] float knockback = 0.0f;
-    [SerializeField] bool isKnockedBack = false;
-    [SerializeField] float knockbackStart = 0.0f;
-    [SerializeField] float knockbackLimit = 0.0f;
-    [SerializeField] float lockingPlayerScale;
 
-   
-
-
-    void Start() {
+    void Start()
+    {
         // Obtains the components from the Controller2D Script.
         controller = GetComponent<Controller2D>();
+        // Locate and obtain access to the PlayerStatus script.
+        knockbackController = GetComponent<PlayerStatus2>();
 
         // Formulas for gravity, jumping and walljumping.
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
@@ -68,9 +86,10 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
 
     // Variable to keep track of dashing directions.
     bool flipped = false;
-    
-    void Flip() {
-        if (isKnockedBack == false)
+
+    void Flip()
+    {
+        if (knockbackController.wasKnockedBack == false)
         {
             // Flips the Player character by its scale value.
             Vector3 playerScale = transform.localScale;
@@ -83,41 +102,45 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
             {
                 flipped = true;
             }
-        }          
+        }
     }
 
-    void Update() {
-
-        // Takes all horizontal input from the player when moving left or right.
-        Vector2 input = new Vector2(Input.GetAxisRaw("HorizontalMove"), Input.GetAxisRaw("VerticalMove"));
-
-        // If the input is moving the player right while the player is facing left...    
-        if (Input.GetAxisRaw("HorizontalMove") < 0 && transform.localScale.x > 0) {
-            // ... flip the player.
-            Flip();
-        }
-
-        // Otherwise if the input is moving the player left while the player is facing right...
-        else if (Input.GetAxisRaw("HorizontalMove") > 0 && transform.localScale.x < 0) {
-            // ... flip the player.
-            Flip();
-        }
-
-        // Determines collision direction when colliding against walls.
-        int wallDirectionX = (controller.collisions.left) ? -1 : 1;
-
+    void Update()
+    {
         
+            // Takes all horizontal input from the player when moving left or right.
+            Vector2 input = new Vector2(Input.GetAxisRaw("HorizontalMove"), Input.GetAxisRaw("VerticalMove"));
 
-        if (isKnockedBack == false)
-        {
+            // If the input is moving the player right while the player is facing left...    
+            if (Input.GetAxisRaw("HorizontalMove") < 0 && transform.localScale.x > 0)
+            {
+                // ... flip the player.
+                Flip();
+            }
 
-// Movement calculations when the Player is moving left or right.
-        float targetVelocityX = input.x * moveSpeed;
-        float standardMovementVelocity = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)
-            ? accelerationTimeOnTheGround : accelerationTimeInTheAir);
+            // Otherwise if the input is moving the player left while the player is facing right...
+            else if (Input.GetAxisRaw("HorizontalMove") > 0 && transform.localScale.x < 0)
+            {
+                // ... flip the player.
+                Flip();
+            }
+
+            // Determines collision direction when colliding against walls.
+            int wallDirectionX = (controller.collisions.left) ? -1 : 1;
+
+
+
+       
+
+            // Movement calculations when the Player is moving left or right.
+            float targetVelocityX = input.x * moveSpeed;
+            float standardMovementVelocity = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)
+                ? accelerationTimeOnTheGround : accelerationTimeInTheAir);
 
             velocity.x = standardMovementVelocity;
 
+ if (knockbackController.wasKnockedBack == false)
+        {
             // Controls various aspects when moving against and on walls.
             bool wallSliding = false;
             if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
@@ -185,7 +208,7 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
                     }
 
                     // Resets air dash counter as the Player is on a wall.
-                    lockingAllAirDashes = 0;
+                    // lockingAllAirDashes = 0;
 
                     // Prevents the Player from dashjumping by this point.
                     if (!Input.GetButton("Dash"))
@@ -201,7 +224,7 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
                     velocity.y = maximumJumpVelocity;
 
                     // Resets air dash counter as the Player lands on the ground.
-                    lockingAllAirDashes = 0;
+                    // lockingAllAirDashes = 0;
 
                     // Prevents the Player from dashjumping by this point.
                     if (!Input.GetButton("Dash"))
@@ -221,7 +244,7 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
                 }
 
                 // Resets air dash counter as the Player lands on the ground.
-                lockingAllAirDashes = 0;
+                // lockingAllAirDashes = 0;
                 // Prevents the Player from dashjumping by this point.
                 if (!Input.GetButton("Dash"))
                 {
@@ -230,26 +253,25 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
             }
 
             // If dashing jumping, allow the player to continue their dashing momentum.
-            if ((Input.GetButton("Dash") && Input.GetButton("Jump")) && lockingAllDashJumping < 1)
-            {
-                // Used to provide dashjump momentum when moving towards the right.
-                if (transform.localScale.x > 0)
-                {
-                    velocity.x = dashJumpCoverage;
-                }
+            if ((Input.GetButton("Dash") && Input.GetButton("Jump")) && lockingAllDashJumping < 1) {
+                    // Used to provide dashjump momentum when moving towards the right.
+                    if (transform.localScale.x > 0)
+                    {
+                        velocity.x = dashJumpCoverage;
+                    }
 
-                // Used to provide dashjump momentum when moving towards the left.
-                else if (transform.localScale.x < 0)
-                {
-                    velocity.x = -dashJumpCoverage;
-                }
+                    // Used to provide dashjump momentum when moving towards the left.
+                    else if (transform.localScale.x < 0)
+                    {
+                        velocity.x = -dashJumpCoverage;
+                    }
 
-                // Stops the Player's dashing immediately if they jump without moving left or right.
-                if (Input.GetAxisRaw("HorizontalMove") == 0)
-                {
-                    velocity.x = 0;
-                }
-            }
+                    // Stops the Player's dashing immediately if they jump without moving left or right.
+                    if (Input.GetAxisRaw("HorizontalMove") == 0)
+                    {
+                        velocity.x = 0;
+                    }
+            }        
 
             // Starts the timer when Dashing.
             if (Input.GetButtonDown("Dash"))
@@ -303,32 +325,22 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
                     // Returns Player back to normal velocity and cancels any more dash momentum.                           
                     velocity.x = standardMovementVelocity;
                 }
+
             }
         }
-        
-        else if (isKnockedBack == true)
-        {
-            knockbackStart += Time.deltaTime;
 
-            if (lockingPlayerScale > 0)
-            {
-                //if (Input.GetAxisRaw("HorizontalMove") <= 0)
-                {
-                    velocity = new Vector2(-knockback, knockback);
-                }
+        else if (knockbackController.wasKnockedBack == true)        {
+
+
+            if (knockbackController.lockingPlayerScale > 0)            {
+                velocity = new Vector2(-knockbackSpeed, knockbackSpeed / 2.5f);
             }
-           else if (lockingPlayerScale < 0)
-            {
-                //if (Input.GetAxisRaw("HorizontalMove") == 1)
-                {
-                    velocity = new Vector2(knockback, knockback);
-                }
+
+            else if (knockbackController.lockingPlayerScale < 0)            {
+                velocity = new Vector2(knockbackSpeed, knockbackSpeed / 2.5f);
             }
-            
-            Debug.Log(knockbackStart);
-            if (knockbackStart >= knockbackLimit) {
-                isKnockedBack = false;
-            }
+
+
         }
 
 
@@ -352,31 +364,21 @@ public class PlayerMovementWithKnockback : MonoBehaviour {
         //////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////
         */
+            // Affects the game's gravity and movement inputs.          
+            velocity.y += gravity * Time.deltaTime;
+            controller.Move(velocity * Time.fixedDeltaTime, input);
 
-        // Affects the game's gravity and movement inputs.          
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.fixedDeltaTime, input);
-      
-        if (controller.collisions.above || controller.collisions.below) {
-            // Sets the Player's gravity to 0 if they're on the ground or against the ceiling.
-            velocity.y = 0;                                 
-        }
+            if (controller.collisions.above || controller.collisions.below)
+            {
+                // Sets the Player's gravity to 0 if they're on the ground or against the ceiling.
+                velocity.y = 0;
+            }
 
-        if (controller.collisions.below) {
-            // Brings back the opportunity to dashjumping again to the Player.
-            lockingAllDashJumping = 0;
+            if (controller.collisions.below)
+            {
+                // Brings back the opportunity to dashjumping again to the Player.
+                lockingAllDashJumping = 0;
+            }
         }
-        
+       
     }
-    
-    void OnTriggerEnter2D(Collider2D other) {
-        // Checks to see if the Player collides with the GameObject attached to this script.
-        if (other.name == "Enemy") {
-            isKnockedBack = true;
-            knockbackStart = 0.0f;
-            lockingPlayerScale = transform.localScale.x;
-            Debug.Log(knockbackStart);
-        }
-    }
-    
-}

@@ -10,7 +10,7 @@ public class GameMaster : MonoBehaviour {
     [SerializeField] GameObject respawnParticle = null;             // Creates respawnParticles when the Player is respawned.
     [SerializeField] CameraShake cameraShake = null;                // Shakes the Main Camera violently when triggered.
       
-    private PlayerStatus player;                                    // Reference to the PlayerStatus script.
+    private PlayerStatus2 player;                                    // Reference to the PlayerStatus script.
 
     void Awake() {
         // In case gameMaster prefab cannot be found.
@@ -22,7 +22,7 @@ public class GameMaster : MonoBehaviour {
 
     void Start() {
         // Obtains the components from the PlayerStatus Script.
-        player = FindObjectOfType<PlayerStatus>();   
+        player = FindObjectOfType<PlayerStatus2>();   
         
         // In case the mainCamera prefab cannot be found.
         if (cameraShake == null) {
@@ -41,7 +41,7 @@ public class GameMaster : MonoBehaviour {
         Instantiate(deathParticle, player.transform.position, player.transform.rotation);
         
         // 2. Shuts off the Player Prefab temporarily.
-        player.gameObject.SetActive(false);      
+        player.gameObject.SetActive(false);
 
         // 3. Spawns the Player to the location of a recent checkpoint.
         player.transform.position = currentCheckpoint.transform.position;
@@ -50,7 +50,7 @@ public class GameMaster : MonoBehaviour {
         yield return new WaitForSeconds(respawnDelay);
        
         // 5. Turns the Player Prefab back on again for continue play.
-        player.gameObject.SetActive(true);
+        player.gameObject.SetActive(true);      
        
         // 6. When the Player respawns back at the checkpoint, release the respawnParticles.
         Instantiate(respawnParticle, currentCheckpoint.transform.position, currentCheckpoint.transform.rotation);       

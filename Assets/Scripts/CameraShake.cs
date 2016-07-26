@@ -27,7 +27,6 @@ public class CameraShake : MonoBehaviour {
     void DoShake() {
         if (shakeAmount > 0) {
             Vector3 cameraPosition = mainCamera.transform.position;
-
             float offsetX = Random.value * shakeAmount * 2 - shakeAmount;
             float offsetY = Random.value * shakeAmount * 2 - shakeAmount;
 

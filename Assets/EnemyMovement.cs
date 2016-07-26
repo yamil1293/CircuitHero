@@ -7,11 +7,11 @@ public class EnemyMovement : MonoBehaviour {
     [SerializeField] float enemyMoveSpeed = 0.0f;                    // Moves the enemy to a specific direction.
     [SerializeField] bool enemyMovesRight = false;                   // Used to change the enemy's direction when moving.
 
-    EnemyController2D enemyController;                               // Reference to the Controller2D configurations.
+    // EnemyController2D enemyController;                            // Reference to the Controller2D configurations.
 
     void Start () {
         // Obtains the components from the Controller2D Script.
-        enemyController = GetComponent<EnemyController2D>();       
+        // enemyController = GetComponent<EnemyController2D>();       
     }
 	
 	void Update () {
