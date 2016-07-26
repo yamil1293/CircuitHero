@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{2153C0C4-B25F-8EC9-1524-EAB0C93F7A8C}</ProjectGuid>
+	<ProjectGuid>{B2831A25-E338-4A7B-A667-8106B85EB65F}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -118,56 +118,47 @@
      <Compile Include="Assets\AstarPathfindingProject\Utilities\ProfileHelper.cs" />
      <Compile Include="Assets\AstarPathfindingProject\Utilities\UnityReferenceHelper.cs" />
      <Compile Include="Assets\AstarPathfindingProject\changelog.cs" />
-     <Compile Include="Assets\Checkpoints.cs" />
-     <Compile Include="Assets\KillPlayer.cs" />
-     <Compile Include="Assets\LevelManager.cs" />
-     <Compile Include="Assets\Scripts\ArmRotation.cs" />
+     <Compile Include="Assets\DiffusionMode.cs" />
+     <Compile Include="Assets\MagneticMode.cs" />
+     <Compile Include="Assets\NewBlasterManager.cs" />
+     <Compile Include="Assets\OldBlasterManager.cs" />
+     <Compile Include="Assets\PrefabBlasterManager.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\CameraShake.cs" />
      <Compile Include="Assets\Scripts\Controller2D.cs" />
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\EnemyStatus.cs" />
      <Compile Include="Assets\Scripts\GameMaster.cs" />
-     <Compile Include="Assets\Scripts\MoveTrail.cs" />
      <Compile Include="Assets\Scripts\MovingPlatformController.cs" />
      <Compile Include="Assets\Scripts\Parallaxing.cs" />
-     <Compile Include="Assets\Scripts\PlayerConfig.cs" />
+     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\PlayerStatus.cs" />
+     <Compile Include="Assets\Scripts\PowerMode.cs" />
      <Compile Include="Assets\Scripts\RaycastController.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\ActivateTrigger.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CameraRefocus.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\AxisTouchButton.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\ButtonHandler.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\CrossPlatformInputManager.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\InputAxisScrollbar.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\Joystick.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\MobileControlRig.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\MobileInput.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\StandaloneInput.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\TiltInput.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CrossPlatformInputScripts\VirtualInput.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\CurveControlledBob.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\DragRigidbody.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\DynamicShadowSettings.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\FOVKick.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\FPSCounter.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\FollowTarget.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\ForcedReset.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\LerpControlledBob.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\ObjectResetter.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\ParticleSystemDestroyer.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\Restarter.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\SimpleActivatorMenu.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\SimpleMouseRotator.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\SmoothFollow.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\TimedObjectActivator.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\TimedObjectDestructor.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\WaypointCircuit.cs" />
-     <Compile Include="Assets\Scripts\Script (Unused)\WaypointProgressTracker.cs" />
+     <Compile Include="Assets\Scripts\ShotTrail.cs" />
      <Compile Include="Assets\Scripts\StatusIndicator.cs" />
      <Compile Include="Assets\Scripts\Tiling.cs" />
-     <Compile Include="Assets\Scripts\Weapon.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\ActivateTrigger.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\AirDashAbility.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\CameraRefocus.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\Checkpoints.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\FPSCounter.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\FollowTarget.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\KillPlayer.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\LevelManager.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\MovementCodeBackup.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\ObjectResetter.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\ParticleSystemDestroyer.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\Restarter.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\SimpleActivatorMenu.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\SmoothFollow.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\TimedObjectActivator.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\TimedObjectDestructor.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\WaypointCircuit.cs" />
+     <Compile Include="Assets\Scripts\Unused Scripts\WaypointProgressTracker.cs" />
+     <Compile Include="Assets\ThermalMode.cs" />
      <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh2.shader" />
      <None Include="Assets\AstarPathfindingProject\Plugins\DotNetZip\DotNetZipLicense.txt" />
      <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
@@ -190,10 +181,10 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>C:/Users/Home.PC/Desktop/Circuit Hero Unity Project V4/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>C:/Users/Home.PC/Desktop/Circuit Hero Unity Project V5/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.JsonFx">
- <HintPath>C:/Users/Home.PC/Desktop/Circuit Hero Unity Project V4/Assets/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
+ <HintPath>C:/Users/Home.PC/Desktop/Circuit Hero Unity Project V5/Assets/AstarPathfindingProject/Plugins/JsonFx/Pathfinding.JsonFx.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

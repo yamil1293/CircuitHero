@@ -3,11 +3,11 @@ using System.Collections;
 
 public class Controller2D : RaycastController {
 
-    float maxClimbAngle = 80;               // Used for slopes
-    float maxDescendAngle = 80;
+    float maxClimbAngle = 80;                             // Used to determine maximum angle to climb up slopes.
+    float maxDescendAngle = 80;                           // Used to determine maximum angle to descend down slopes.
 
-    public CollisionInfo collisions;
-    [HideInInspector] public Vector2 playerInput;
+    public CollisionInfo collisions;                      // Determines collision horizontally and vertically.
+    [HideInInspector] public Vector2 playerInput;         // Used to obtain inputs from the Player.
 
     public override void Start() {
         base.Start();
