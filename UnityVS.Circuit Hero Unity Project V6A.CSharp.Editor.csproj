@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1CD34AF9-96D0-9B82-835D-6BD533C5FBD9}</ProjectGuid>
+    <ProjectGuid>{31F11462-30B9-B979-6E60-5FB78C1875C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -122,9 +122,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="UnityVS.Circuit Hero Unity Project V5.CSharp.csproj">
-      <Project>{34182DFD-C001-8E9E-1E64-F78F1258048B}</Project>
-      <Name>UnityVS.Circuit Hero Unity Project V5.CSharp</Name>
+    <ProjectReference Include="UnityVS.Circuit Hero Unity Project V6.CSharp.csproj">
+      <Project>{2542FE3B-6E46-26D6-6142-854E14C984B9}</Project>
+      <Name>UnityVS.Circuit Hero Unity Project V6.CSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
