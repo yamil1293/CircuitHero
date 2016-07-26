@@ -3,10 +3,8 @@ using UnityEngine.UI;
 
 public class StatusIndicator : MonoBehaviour {
 
-    [SerializeField]
-    private RectTransform healthBarRectangle;
-    [SerializeField]
-    private Text healthText;
+    [SerializeField] private RectTransform healthBarRectangle = null;
+    [SerializeField] private Text healthText = null;
 
     void Start()
     {

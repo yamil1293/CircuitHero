@@ -28,7 +28,7 @@ public class EnemyStatus : MonoBehaviour {
     public Transform deathParticles;
 
     [SerializeField]
-    private StatusIndicator statusIndicator;
+    private StatusIndicator statusIndicator = null;
 
     void Start()
     {

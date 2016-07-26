@@ -136,7 +136,7 @@ public class ProceduralWorld : MonoBehaviour {
 		
 		int x, z;
 		System.Random rnd;
-		bool staticBatching;
+		//bool staticBatching;
 
 		ProceduralWorld world;
 

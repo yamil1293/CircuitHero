@@ -24,7 +24,7 @@ public class PlayerStatus : MonoBehaviour {
     public int fallBoundary = -20;
 
     [SerializeField]
-    private StatusIndicator statusIndicator;
+    private StatusIndicator statusIndicator = null;
 
     void Start() {
 

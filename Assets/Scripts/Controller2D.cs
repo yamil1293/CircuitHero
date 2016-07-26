@@ -1,57 +1,53 @@
-using System.Collections;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
+using System.Collections;
 
-namespace UnityStandardAssets._2D
-{
-    [RequireComponent(typeof(BoxCollider2D))]
-    public class Controller2D : MonoBehaviour
-    {
-        public LayerMask collisionMask;
-        const float skinWidth = .015f;
-        public int horizontalRayCount = 4;
-        public int verticalRayCount = 4;
-
+    public class Controller2D : RaycastController
+    {        
         float maxClimbAngle = 80;               // Used for slopes
         float maxDescendAngle = 80;
 
-        float horizontalRaySpacing;
-        float verticalRaySpacing;
-
-        BoxCollider2D collider;             // Check this out for renaming and fixing
-        RaycastOrigins raycastOrigins;
         public CollisionInfo collisions;
+        [HideInInspector] public Vector2 playerInput;
 
-        private PlayerConfig movingPlayerCharacter;
-        private bool movingPlayerByJumping;
-
-        // Use this for initialization
-        void Start()
-        {
-            collider = GetComponent<BoxCollider2D>();
-            CalculateRaySpacing();
+        public override void Start() {
+            base.Start();
+            collisions.faceDirection = 1;
         }
 
-        public void Move(Vector3 velocity) {
+        public void Move(Vector3 velocity, bool standingOnPlatform) {
+         Move(velocity, Vector2.zero, standingOnPlatform);
+        }
+
+        public void Move(Vector3 velocity, Vector2 input, bool standingOnPlatform = false) {
             UpdateRaycastOrigins();
             collisions.reset();
             collisions.velocityOld = velocity;
+            playerInput = input;
+
+            if (velocity.x != 0) {
+                collisions.faceDirection = (int)Mathf.Sign(velocity.x);
+            }
             if (velocity.y < 0) {
                 DescendSlope(ref velocity);
             }
-            if (velocity.x != 0) {
-                HorizontalCollisions(ref velocity);
-            }
+            HorizontalCollisions(ref velocity);
             if (velocity.y != 0) {
                 VerticalCollisions(ref velocity);
             }
             transform.Translate(velocity);
+            if (standingOnPlatform) {
+                collisions.below = true;
+            }
         }
 
         void HorizontalCollisions(ref Vector3 velocity)
         {
-            float directionX = Mathf.Sign(velocity.x);
+            float directionX = collisions.faceDirection;
             float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+
+            if (Mathf.Abs(velocity.x) < skinWidth) {
+                rayLength = 2 * skinWidth;
+            }
 
             for (int i = 0; i < horizontalRayCount; i++)
             {
@@ -63,11 +59,12 @@ namespace UnityStandardAssets._2D
 
                 if (hit)
                 {
-
+                    if (hit.distance == 0) {
+                        continue;
+                    }
                     float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 
-                    if (i == 0 && slopeAngle <= maxClimbAngle)
-                    {
+                    if (i == 0 && slopeAngle <= maxClimbAngle) {
                         if (collisions.descendingSlope)
                         {
                             collisions.descendingSlope = false;
@@ -87,14 +84,13 @@ namespace UnityStandardAssets._2D
                     {
                         velocity.x = (hit.distance - skinWidth) * directionX;
                         rayLength = hit.distance;
+                        collisions.left = directionX == -1;
+                        collisions.right = directionX == 1;
 
                         if (collisions.climbingSlope)
                         {
                             velocity.y = Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
-                        }
-
-                        collisions.left = directionX == -1;
-                        collisions.right = directionX == 1;
+                        }                                               
                     }
                 }
             }
@@ -112,19 +108,31 @@ namespace UnityStandardAssets._2D
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
 
                 Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
-
+                
                 if (hit)
                 {
+                    if (hit.collider.tag == "Through") {
+                        if (directionY == 1 || hit.distance == 0) {
+                            continue;
+                        }
+                    if (collisions.fallingThroughPlatform) {
+                        continue;
+                    }
+                    if (playerInput.y == -1) {
+                        collisions.fallingThroughPlatform = true;
+                        Invoke("ResetFallingThroughPlatform", .5f);
+                        continue;
+                    }
+                 }
                     velocity.y = (hit.distance - skinWidth) * directionY;
                     rayLength = hit.distance;
+                    collisions.below = directionY == -1;
+                    collisions.above = directionY == 1;
 
                     if (collisions.climbingSlope)
                     {
                         velocity.x = velocity.y / Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
-                    }
-
-                    collisions.below = directionY == -1;
-                    collisions.above = directionY == 1;
+                    }                    
                 }
             }
 
@@ -168,7 +176,7 @@ namespace UnityStandardAssets._2D
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
                 if (slopeAngle != 0 && slopeAngle <= maxDescendAngle) {
                     if (Mathf.Sign(hit.normal.x) == directionX) {
-                        if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x)){
+                        if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x)) {
                             float moveDistance = Mathf.Abs(velocity.x);
                             float descendVelocityY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
                             velocity.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(velocity.x);
@@ -183,35 +191,9 @@ namespace UnityStandardAssets._2D
             }
         }
 
-        void UpdateRaycastOrigins()
-        {
-             Bounds bounds = collider.bounds;
-             bounds.Expand(skinWidth * -2);
-
-             raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-             raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-             raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-             raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-        }
-
-        struct RaycastOrigins
-        {
-            public Vector2 topLeft, topRight;
-            public Vector2 bottomLeft, bottomRight;
-        }
-
-        void CalculateRaySpacing()
-        {
-            Bounds bounds = collider.bounds;
-            bounds.Expand(skinWidth * -2);
-
-            horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-            verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
-
-            horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-            verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-        }
-
+    void ResetFallingThroughPlatform() {
+        collisions.fallingThroughPlatform = false;
+    }
 
         public struct CollisionInfo {
             public bool above, below;
@@ -221,6 +203,8 @@ namespace UnityStandardAssets._2D
             public bool descendingSlope;
             public float slopeAngle, slopeAngleOld;
             public Vector3 velocityOld;
+            public int faceDirection;
+        public bool fallingThroughPlatform;
 
             public void reset() {
                 above = below = false;
@@ -232,28 +216,4 @@ namespace UnityStandardAssets._2D
                 slopeAngle = 0;
             }
         }
-
-        private void Awake()
-        {
-            movingPlayerCharacter = GetComponent<PlayerConfig>();
-        }
-
-        private void Update()
-        {                                   
-            if (!movingPlayerByJumping)
-            {
-                // Read the jump input in Update so button presses aren't missed.
-                movingPlayerByJumping = CrossPlatformInputManager.GetButtonDown("Jump");
-            }
-        }
-               
-        private void FixedUpdate()
-        {
-            // Read the inputs.
-            float horizontalAxis = CrossPlatformInputManager.GetAxis("Horizontal");
-            // Pass all parameters to the character control script.
-            movingPlayerCharacter.Move(horizontalAxis, movingPlayerByJumping);
-            movingPlayerByJumping = false;
-        }
-    }   
-}
+    } 

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.Circuit Hero Unity Project V3.CSharp", "UnityVS.Circuit Hero Unity Project V3.CSharp.csproj", "{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.Circuit Hero Unity Project V3.CSharp.Editor", "UnityVS.Circuit Hero Unity Project V3.CSharp.Editor.csproj", "{D0E298C6-C2DE-E6A9-FB19-FB077A3F5D1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E298C6-C2DE-E6A9-FB19-FB077A3F5D1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E298C6-C2DE-E6A9-FB19-FB077A3F5D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E298C6-C2DE-E6A9-FB19-FB077A3F5D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E298C6-C2DE-E6A9-FB19-FB077A3F5D1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
