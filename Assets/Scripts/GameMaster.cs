@@ -3,11 +3,11 @@ using System.Collections;
 
 public class GameMaster : MonoBehaviour {
 
-    public static GameMaster gm;
+    public static GameMaster gameMasterVariable;
 
     void Awake() {
-        if (gm == null) {
-            gm = GameObject.FindGameObjectWithTag ("GM").GetComponent<GameMaster>();
+        if (gameMasterVariable == null) {
+            gameMasterVariable = GameObject.FindGameObjectWithTag ("GameMaster").GetComponent<GameMaster>();
         }
     }
 
@@ -35,20 +35,19 @@ public class GameMaster : MonoBehaviour {
         Destroy(clone.gameObject, 3f);
     }
 
-    public static void KillPlayer (Player player) {
-        Destroy(player.gameObject);
-        gm.StartCoroutine (gm._RespawnPlayer());
+    public static void KillPlayer (PlayerStatus playerStatus) {
+        Destroy(playerStatus.gameObject);
+        gameMasterVariable.StartCoroutine (gameMasterVariable._RespawnPlayer());
     }
 
-    public static void KillEnemy(Enemy enemy)
+    public static void KillEnemy(EnemyStatus enemy)
     {
-        gm._KillEnemy(enemy);
+        gameMasterVariable._KillEnemy(enemy);
     }
-    public void _KillEnemy(Enemy _enemy)
+    public void _KillEnemy(EnemyStatus _enemy)
     {
         GameObject _clone =Instantiate(_enemy.deathParticles, _enemy.transform.position, Quaternion.identity) as GameObject;
         Destroy(_clone, 5f);
-        cameraShake.Shake(_enemy.shakeAmount, _enemy.shakeLength);
         Destroy(_enemy.gameObject);
     }
 }

@@ -14,19 +14,19 @@ public class Tiling : MonoBehaviour {
     public bool reverseScale = false;       // Used if the object is not tilable
 
     private float spriteWidth = 0f;         // The width of our element
-    private Camera cam;
+    private Camera cameraVariable;
     private Transform myTransform;
 
     void Awake() {
-        cam = Camera.main;
+        cameraVariable = Camera.main;
         myTransform = transform;
     }
 
 
     // Use this for initialization
 	void Start () {
-        SpriteRenderer sRenderer = GetComponent<SpriteRenderer>();
-        spriteWidth = sRenderer.sprite.bounds.size.x;
+        SpriteRenderer spriteRendererVariable = GetComponent<SpriteRenderer>();
+        spriteWidth = spriteRendererVariable.sprite.bounds.size.x;
 	}
 	
 	// Update is called once per frame
@@ -35,19 +35,19 @@ public class Tiling : MonoBehaviour {
         if (hasALeftBuddy == false || hasARightBuddy == false)
         {
             // Calculate the cameras extend (half the width) of what the camera can see in world coordinates
-            float camHorizonralExtend = cam.orthographicSize * Screen.width / Screen.height;
+            float cameraHorizonralExtend = cameraVariable.orthographicSize * Screen.width / Screen.height;
 
             // Calculate the x position where the camera can see the edge of the sprite (element)
-            float edgeVisiblePositionRight = (myTransform.position.x + spriteWidth/2) - camHorizonralExtend;
-            float edgeVisiblePositionLeft = (myTransform.position.x - spriteWidth/2) + camHorizonralExtend;
+            float edgeVisiblePositionRight = (myTransform.position.x + spriteWidth/2) - cameraHorizonralExtend;
+            float edgeVisiblePositionLeft = (myTransform.position.x - spriteWidth/2) + cameraHorizonralExtend;
 
             // Checking if we can see the edge of the element and then calling MakeNewBuddy if we can
-            if (cam.transform.position.x >= edgeVisiblePositionRight - offsetX && hasARightBuddy == false)
+            if (cameraVariable.transform.position.x >= edgeVisiblePositionRight - offsetX && hasARightBuddy == false)
             {
                 MakeNewBuddy(1);
                 hasARightBuddy = true;
             }
-            else if (cam.transform.position.x <= edgeVisiblePositionLeft + offsetX && hasALeftBuddy == false)
+            else if (cameraVariable.transform.position.x <= edgeVisiblePositionLeft + offsetX && hasALeftBuddy == false)
             {
                 MakeNewBuddy(-1);
                 hasALeftBuddy = true;

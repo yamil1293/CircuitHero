@@ -20,11 +20,11 @@ public class StatusIndicator : MonoBehaviour {
         }
     }
 
-    public void SetHealth(int _cur, int _max)
+    public void SetHealth(int _currentHealth, int _maxHealth)
     {
-        float _value = (float)_cur / _max;
+        float _value = (float)_currentHealth / _maxHealth;
 
         healthBarRectangle.localScale = new Vector3(_value, healthBarRectangle.localScale.y, healthBarRectangle.localScale.z);
-        healthText.text = _cur + "/" + _max + " HP";
+        healthText.text = _currentHealth + "/" + _maxHealth + " HP";
     }
 }
