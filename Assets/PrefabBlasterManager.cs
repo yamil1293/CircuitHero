@@ -13,7 +13,6 @@ public class PrefabBlasterManager : MonoBehaviour {
     public GameObject chargingShot = null;                       // Holds the charging shot that is to be fired by the Player.    
     public GameObject chargedShot = null;                        // Holds the charged shot that is to be fired by the Player.    
     public GameObject spiralShot = null;                         // Holds the spiral shot that is to be fired by the Player.
-    public GameObject fusionShot = null;                         // Holds the fusion shot that is to be fired by the Player.
 
     [Header("Current Impact Prefabs")]
     public GameObject impactEffect = null;                       // Holds the impactEffect that is created by its shot collision.
@@ -24,25 +23,21 @@ public class PrefabBlasterManager : MonoBehaviour {
         public GameObject standardPowerPrefab = null;             // Holds the Power Mode standard shot in the inspector.
         public GameObject chargingPowerPrefab = null;             // Holds the Power Mode charging shot in the inspector.
         public GameObject chargedPowerPrefab = null;              // Holds the Power Mode charged shot in the inspector.
-        public GameObject fusionPowerPrefab = null;               // Holds the Power Mode fusion shot in the inspector.
 
         [Header("Magnetic Mode Blaster Prefabs")]
         public GameObject standardMagntPrefab = null;             // Holds the Magnetic Mode standard shot in the inspector.
         public GameObject chargingMagntPrefab = null;             // Holds the Magnetic Mode charging shot in the inspector.
         public GameObject chargedMagntPrefab = null;              // Holds the Magnetic Mode charged shot in the inspector.
-        public GameObject fusionMagntPrefab = null;               // Holds the Magnetic Mode fusion shot in the inspector.
 
         [Header("Thermal Mode Blaster Prefabs")]
         public GameObject standardThrmlPrefab = null;             // Holds the Thermal Mode standard shot in the inspector.
         public GameObject chargingThrmlPrefab = null;             // Holds the Thermal Mode charging shot in the inspector.
         public GameObject chargedThrmlPrefab = null;              // Holds the Thermal Mode charged shot in the inspector.
-        public GameObject fusionThrmlPrefab = null;               // Holds the Thermal Mode fusion shot in the inspector.
 
         [Header("Diffusion Mode Blaster Prefabs")]
         public GameObject standardDffsnPrefab = null;             // Holds the Diffusion Mode standard shot in the inspector.
         public GameObject chargingDffsnPrefab = null;             // Holds the Diffusion Mode charging shot in the inspector.
         public GameObject chargedDffsnPrefab = null;              // Holds the Diffusion Mode charged shot in the inspector.
-        public GameObject fusionDffsnPrefab = null;               // Holds the Diffusion Mode fusion shot in the inspector.
 
         [Header("All Mode Blaster Prefabs")]
         public GameObject spiralShotPrefab = null;                // Holds the Spiral shot for all Modes in the inspector. 
@@ -82,7 +77,6 @@ public class PrefabBlasterManager : MonoBehaviour {
             standardShot = blasterPrefabList.standardPowerPrefab;
             chargingShot = blasterPrefabList.chargingPowerPrefab;
             chargedShot = blasterPrefabList.chargedPowerPrefab;
-            fusionShot = blasterPrefabList.fusionPowerPrefab;
             impactEffect = blasterImpactList.powerImpactEffect;
             yield return null;
         }
@@ -93,7 +87,6 @@ public class PrefabBlasterManager : MonoBehaviour {
             standardShot = blasterPrefabList.standardMagntPrefab;
             chargingShot = blasterPrefabList.chargingMagntPrefab;
             chargedShot = blasterPrefabList.chargedMagntPrefab;
-            fusionShot = blasterPrefabList.fusionMagntPrefab;
             impactEffect = blasterImpactList.magneticImpactEffect;
             yield return null;
         }
@@ -104,7 +97,6 @@ public class PrefabBlasterManager : MonoBehaviour {
             standardShot = blasterPrefabList.standardThrmlPrefab;
             chargingShot = blasterPrefabList.chargingThrmlPrefab;
             chargedShot = blasterPrefabList.chargedThrmlPrefab;
-            fusionShot = blasterPrefabList.fusionThrmlPrefab;
             impactEffect = blasterImpactList.thermalImpactEffect;
             yield return null;
         }
@@ -115,7 +107,6 @@ public class PrefabBlasterManager : MonoBehaviour {
             standardShot = blasterPrefabList.standardDffsnPrefab;
             chargingShot = blasterPrefabList.chargingDffsnPrefab;
             chargedShot = blasterPrefabList.chargedDffsnPrefab;
-            fusionShot = blasterPrefabList.fusionDffsnPrefab;
             impactEffect = blasterImpactList.diffusionImpactEffect;
             yield return null;
         }    

@@ -9,11 +9,10 @@ public class BlasterCalculations : MonoBehaviour {
     public BlasterChargingList blasterChargingList = new BlasterChargingList();
 
     [Header("Current Blaster Damage")]
-    [SerializeField] int standardDamage = 0;                       // The standard damage dealt by all Blaster Shots.
-    [SerializeField] int chargingDamage = 0;                       // The charging damage dealt by all Blaster Shots.
-    [SerializeField] int chargedDamage = 0;                        // The charged damage dealt by all Blaster Shots.    
-    [SerializeField] int spiralDamage = 0;                         // The damage dealt by the second charged Shot.
-    [SerializeField] int fusionDamage = 0;                         // The fusion damage dealt all Blaster Shots.
+    [SerializeField] int standardDamage = 0;             // The standard damage dealt by all Blaster Shots.
+    [SerializeField] int chargingDamage = 0;             // The charging damage dealt by all Blaster Shots.
+    [SerializeField] int chargedDamage = 0;              // The charged damage dealt by all Blaster Shots.    
+    [SerializeField] int spiralDamage = 0;               // The damage dealt by the second charged Shot.
 
     [HideInInspector] public int blasterDamage = 0;      // The general blaster damage amount that is to be passed to a Blaster Shot.
 
@@ -29,25 +28,21 @@ public class BlasterCalculations : MonoBehaviour {
         public int standardPowerDamage = 0;                 // The standard damage dealt by Power Shots.
         public int chargingPowerDamage = 0;                 // The charging damage dealt by Power Shots.   
         public int chargedPowerDamage = 0;                  // The charged damage dealt by Power Shots.
-        public int fusionPowerDamage = 0;                   // The fusion strike damage dealt by Power Shots.
 
         [Header("Magnetic Damage")]
         public int standardMagntDamage = 0;                 // The standard damage dealt by Magnetic Shots.
         public int chargingMagntDamage = 0;                 // The charging damage dealt by Magnetic Shots.
         public int chargedMagntDamage = 0;                  // The charged damage dealt by Magnetic Shots.
-        public int fusionMagntDamage = 0;                   // The fusion strike damage dealt by Magnetic Shots.
 
         [Header("Thermal Damage")]
         public int standardThrmlDamage = 0;                 // The standard damage dealt by Thermal Shots.
         public int chargedThrmlDamage = 0;                  // The charged damage dealt by Thermal Shots.
         public int chargingThrmlDamage = 0;                 // The charging damage dealt by Thermal Shots.
-        public int fusionThrmlDamage = 0;                   // The fusion strike damage dealt by Thermal Shots.
 
         [Header("Diffusion Damage")]
         public int standardDffsnDamage = 0;                 // The standard damage dealt by Diffusion Shots.
         public int chargingDffsnDamage = 0;                 // The charging damage dealt by Diffusion Shots.
         public int chargedDffsnDamage = 0;                  // The charged damage dealt by Diffusion Shots.
-        public int fusionDffsnDamage = 0;                   // The fusion strike damage dealt by Diffusion Shots.
 
         [Header("Spiral Damage")]
         public int spiralShotDamage = 0;                    // The charged damage dealt by a Spiral Shot.
@@ -122,12 +117,6 @@ void Update() {
                 // Pass the Charged Power Shot damage amount to ShotProperties.
                 blasterDamage = blasterDamageList.chargedPowerDamage;
             }
-
-            // Check if isThisAFusionShot is True.
-            else if (blasterManager.isThisAFusionShot == true) {
-                // Pass the Fusion Power Shot damage amount to ShotProperties.
-                blasterDamage = blasterDamageList.fusionPowerDamage;
-            }
             yield return null;
         }
 
@@ -149,12 +138,6 @@ void Update() {
             else if (blasterManager.isThisAChargedShot == true) {
                 // Pass the Charged Magnetic Shot damage amount to ShotProperties.
                 blasterDamage = blasterDamageList.chargedMagntDamage;
-            }
-
-            // Check if isThisAFusionShot is True.
-            else if (blasterManager.isThisAFusionShot == true) {
-                // Pass the Fusion Magnetic Shot damage amount to ShotProperties.
-                blasterDamage = blasterDamageList.fusionMagntDamage;
             }
             yield return null;
         }
@@ -178,12 +161,6 @@ void Update() {
                 // Pass the Charged Thermal Shot damage amount to ShotProperties.
                 blasterDamage = blasterDamageList.chargedThrmlDamage;
             }
-
-            // Check if isThisAFusionShot is True.
-            else if (blasterManager.isThisAFusionShot == true) {
-                // Pass the Fusion Thermal Shot damage amount to ShotProperties.
-                blasterDamage = blasterDamageList.fusionThrmlDamage;
-            }
             yield return null;
         }
 
@@ -206,12 +183,6 @@ void Update() {
                 // Pass the Charged Diffusion Shot damage amount to ShotProperties.
                 blasterDamage = blasterDamageList.chargedDffsnDamage;
             }
-
-            // Check if isThisAFusionShot is True.
-            else if (blasterManager.isThisAFusionShot == true) {
-                // Pass the Fusion Diffusion Shot damage amount to ShotProperties.
-                blasterDamage = blasterDamageList.fusionDffsnDamage;
-            }
             yield return null;
         }
     }
@@ -226,7 +197,6 @@ void Update() {
             standardDamage = blasterDamageList.standardPowerDamage;
             chargingDamage = blasterDamageList.chargingPowerDamage;
             chargedDamage = blasterDamageList.chargedPowerDamage;
-            fusionDamage = blasterDamageList.fusionPowerDamage;
             yield return null;
         }
 
@@ -236,7 +206,6 @@ void Update() {
             standardDamage = blasterDamageList.standardMagntDamage;
             chargingDamage = blasterDamageList.chargingMagntDamage;
             chargedDamage = blasterDamageList.chargedMagntDamage;
-            fusionDamage = blasterDamageList.fusionMagntDamage;
             yield return null;
         }
 
@@ -246,7 +215,6 @@ void Update() {
             standardDamage = blasterDamageList.standardThrmlDamage;
             chargingDamage = blasterDamageList.chargingThrmlDamage;
             chargedDamage = blasterDamageList.chargedThrmlDamage;
-            fusionDamage = blasterDamageList.fusionThrmlDamage;
             yield return null;
         }
 
@@ -256,7 +224,6 @@ void Update() {
             standardDamage = blasterDamageList.standardDffsnDamage;
             chargingDamage = blasterDamageList.chargingDffsnDamage;
             chargedDamage = blasterDamageList.chargedDffsnDamage;
-            fusionDamage = blasterDamageList.fusionDffsnDamage;
             yield return null;
         }
     }

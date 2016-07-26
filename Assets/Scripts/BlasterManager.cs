@@ -19,7 +19,6 @@ public class BlasterManager : MonoBehaviour {
     public bool isThisAStandardShot = false;                      // Used to lock in Standard Shot when it is being fired.
     public bool isThisAChargingShot = false;                      // Used to lock in Charging Shot when it is being fired.
     public bool isThisAChargedShot = false;                       // Used to lock in Charged Shot when it is being fired.
-    public bool isThisAFusionShot = false;                        // Used to lock in Fusion Shot when it is being fired.
     public bool isThisASpiralShot = false;                        // Used to lock in Spiral Shot when it is being fired.
 
     [HideInInspector] bool spiralShotChecked = false;             // Checks to see if a Spiral Blaster shot is made possible.
@@ -50,9 +49,8 @@ public class BlasterManager : MonoBehaviour {
             powerModeIsOn = true;
         }
 
-        // If all 5 checks (standard, charging, charged, fusion and spiral) are false, make isThisAStandardShot true by default.
-        if (isThisAStandardShot == false && isThisAChargingShot == false && isThisAChargedShot == false && isThisAFusionShot == false
-            && isThisASpiralShot == false) {
+        // If all 5 checks (standard, charging, charged, and spiral) are false, make isThisAStandardShot true by default.
+        if (isThisAStandardShot == false && isThisAChargingShot == false && isThisAChargedShot == false && isThisASpiralShot == false) {
             // isThisAStandardShot will become true when everything else is (or becomes) false.
             isThisAStandardShot = true;
         }
