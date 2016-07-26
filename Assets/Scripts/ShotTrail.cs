@@ -4,16 +4,17 @@ using System.Collections;
 public class ShotTrail : MonoBehaviour {
 
     [SerializeField] int shotSpeed = 10;                              // The speed the shot can travel in the x and y axis.
-    [SerializeField] LayerMask whatToHit;                             // Determines what shots collides with what.
+    [SerializeField] int blasterDamage = 0;                           // The amount of damage this blaster shot deals to enemies. 
+    [SerializeField] GameObject impactEffect = null;                  // This particle is created after every collision.
 
-    NewBlasterManager arm;                                            // Reference to the NewBlasterManager configurations.
+    BlasterManager arm;                                               // Reference to the BlasterManager configurations.
     Controller2D player;                                              // Reference to the Controller2D configurations.                                            
     Vector2 direction;                                                // Used to hold changes made to the x and y axis.
-    
+
     void Start() {
-        // Obtains the components from the Controller2D and NewBlasterManager Script.
+        // Obtains the components from the Controller2D and BlasterManager Script.
         player = FindObjectOfType<Controller2D>();    
-        arm = FindObjectOfType<NewBlasterManager>();
+        arm = FindObjectOfType<BlasterManager>();
 
         // Checks to see if the Player's arm has not rotated or if the Player isn't holding up or down.
         if (arm.transform.localRotation.z == 0.0f && Input.GetAxisRaw("VerticalMove") == 0) {
@@ -51,14 +52,22 @@ public class ShotTrail : MonoBehaviour {
         // Direction is changed automatically based on the Player's action.        
         transform.Translate(direction * Time.deltaTime);        
     }
-
+    
     void OnTriggerEnter2D(Collider2D other) {
-        // Checks for the other GameObject's tag and see if it can be destroyed.
+        // Checks for the Enemy GameObject's tag.
         if (other.tag == "Enemy") {
-            Destroy(other.gameObject);
+            // Pass the damage amount to the EnemyStatus script.
+            other.GetComponent<EnemyStatus>().AssigningDamage(blasterDamage);
         }
 
-        // If the shot Prefab collides with something that triggers it, destroy it.
+        // Checks for other GameObjects' tags in case alternate actions need to be taken.
+        if (other.tag == "Environmental" && other.tag == "Through") {
+            // If the shot collides with the above tags, destroy the shot's GameObject. 
+            Destroy(gameObject);
+        }
+
+        // If the shot Prefab collides with anything that triggers it, destroy it.
+        Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(gameObject);
-    }
+    } 
 }

@@ -3,57 +3,40 @@ using System.Collections;
 
 public class EnemyStatus : MonoBehaviour {
 
-    [System.Serializable] public class EnemyStats {
-        public int maxHealth = 100;     
-        public int _currentHealth;
-
-        public int currentHealth {
-            get { return _currentHealth; }
-			set { _currentHealth = Mathf.Clamp (value, 0, maxHealth); }
-        }
-
-        public int damage = 40;
-
-        public void Init() {
-            currentHealth = maxHealth;
-        }
-    }
-
-    public EnemyStats stats = new EnemyStats();
-    public Transform deathParticles;
-
-    [SerializeField] private StatusIndicator statusIndicator = null;
+    [SerializeField] int enemyMaxHealth = 3;                      // Sets the maximum amount of health an Enemy has.
+    private int enemyCurrentHealth = 0;                           // Keeps track of the enemy's current Health.
+    [SerializeField] int collisionDamage = 0;                     // Used to damage the Player when they collide with the enemy.
+    [SerializeField] GameObject enemyDeathParticle = null;        // Creates deathParticles when the Enemy is killed. 
+    private EnemyStatus enemy;                                    // Reference to the EnemyStatus script.
 
     void Start() {
-       stats.Init();
+        // Obtains the components from the PlayerStatus Script.
+        enemy = FindObjectOfType<EnemyStatus>();
+        // Have enemyCurrentHealth take control and keep track of the enemy's remaining health.
+        enemyCurrentHealth = enemyMaxHealth;
+    }   
 
-        if (statusIndicator != null) {
-            statusIndicator.SetHealth(stats.currentHealth, stats.maxHealth);
-        }
-
-        if (deathParticles == null) {
-            Debug.LogError("No death particles regerenced on Enemy.");
-        }
-    }
-
-    public void DamageEnemy(int damage) {
-        stats.currentHealth -= damage;
-
-        if (stats.currentHealth <= 0) {
-            GameMaster.KillEnemy(this);
-        }
-
-        if (statusIndicator != null) {
-            statusIndicator.SetHealth(stats.currentHealth, stats.maxHealth);
+    void Update() {
+        if (enemyCurrentHealth <= 0) {
+            // When the enemy's current health goes to zero or lower,
+            // release a particle in its place and destroy the Enemy's GameObject.
+            Instantiate(enemyDeathParticle, enemy.transform.position, enemy.transform.rotation);
+            Destroy(gameObject);           
         }
     }
 
-    void OnCollisionEnter2D(Collision2D _colliderInfo) {
-        PlayerStatus _player = _colliderInfo.collider.GetComponent<PlayerStatus>();
+    public void AssigningDamage(int blasterDamage) {
+        // Subtracts the current value from enemyMaxHealth by the playerBlasterDamage.
+        enemyCurrentHealth -= blasterDamage;
+        // Plays the EnemyHurt Audio.
+        GetComponent<AudioSource>().Play();
+    }
 
-        if (_player != null) {
-            _player.DamagePlayer(stats.damage);
-            DamageEnemy(999999);
+    void OnTriggerEnter2D(Collider2D other) {
+        // Checks for the Player GameObject's tag.
+        if (other.tag == "Player") {
+            // Pass the collisionDamage amount to the PlayerStatus script.
+            other.GetComponent<PlayerStatus>().DamagePlayer(collisionDamage);
         }
     }
 }

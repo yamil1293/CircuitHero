@@ -3,6 +3,7 @@ using System.Collections;
 
 public class MagneticMode : MonoBehaviour {
 
+    /*
     [Header("Magnetic Damage")]
     [SerializeField] int magneticStandard = 10;                        // The standard damage dealt by Magnetic Shots.
     [SerializeField] int magneticCharged = 10;                        // The charged damage dealt by Magnetic Shots.
@@ -12,6 +13,7 @@ public class MagneticMode : MonoBehaviour {
     [SerializeField] float magnRapidFireRate = 0;                         // Controls the rapid firing rate of Magnetic Shots.
     [SerializeField] float magnFullyCharged = 0;                      // Controls the time needed to charge lvl2 Magnetic Shots.
     [SerializeField] float magnSpiralCharged = 0;                      // Controls the time needed to charge lvl3 Magnetic Shots.
+    */
 
     /* 
         // [SerializeField] specialProperty = Paralysis, Force, Pierce or NA

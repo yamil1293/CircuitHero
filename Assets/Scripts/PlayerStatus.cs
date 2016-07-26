@@ -1,53 +1,66 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerStatus : MonoBehaviour {
+public class PlayerStatus : MonoBehaviour { 
 
-    [System.Serializable] public class PlayerStats {
-        public int maxHealth = 100;
-        private int _currentHealth;
+    // Calculates the Player's health and keeps it up to date.
+    [System.Serializable] public class HealthCalculator {
+        // Sets the maximum amount of health an Enemy has.
+        [SerializeField] public int playerMaxHealth = 100;
+        
+        // Used to collect and return the Player's current health.
+        int calculatingPlayerHealth;
 
-        public int currentHealth {
-            get { return _currentHealth; }
-            set { _currentHealth = Mathf.Clamp(value, 0, maxHealth); }
+        // Values being handled under playerCurrentHealth.
+        public int playerCurrentHealth {
+            // Calculates Player Health and returns it under playerCurrentHealth.
+            get { return calculatingPlayerHealth; }
+            set { calculatingPlayerHealth = Mathf.Clamp(value, 0, playerMaxHealth); }
         }
 
         public void Init() {
-            currentHealth = maxHealth;
+            // Immediately sets the playerCurrentHealth value with whatever is in playerMaxHealth.
+            playerCurrentHealth = playerMaxHealth;
         }
     }
 
-    public PlayerStats stats = new PlayerStats();
-    public int fallBoundary = -20;
-
-    [SerializeField] private StatusIndicator statusIndicator = null;
+    [SerializeField] StatusIndicator statusIndicator = null;              // Provides access to a StatusIndicator GameObject attached to the player.
+    GameMaster gameMaster;                                                // References the GameMaster configurations.        
+    public HealthCalculator healthCalculator = new HealthCalculator();    // Obtains the numerical values from playerMaxHealth and playerCurrentHealth.  
 
     void Start() {
-        stats.Init();
+        // Immedaitely passes the numeric value within playerMaxHealth to playerCurrentHealth.
+        healthCalculator.Init();
+
+        // Locate and obtain access to the GameMaster prefab.
+        gameMaster = FindObjectOfType<GameMaster>();
 
         if (statusIndicator == null) {
+            // Provides an alert to the Unity Editor's Console Log.
             Debug.LogError("No status indicator referenced on Player");
         }
 
         else {
-            statusIndicator.SetHealth(stats.currentHealth, stats.maxHealth);
+            // Otherwise pass the values obtained in healthCalculator to the StatusIndicator.
+            statusIndicator.SetHealth(healthCalculator.playerCurrentHealth, healthCalculator.playerMaxHealth);
         }
     }
 
-    void Update() {
-        if (transform.position.y <= fallBoundary)
-        {
-            DamagePlayer(9999999);
-        }
-    }
+    public void DamagePlayer(int outsideDamage) {
+        // Player's health will decrease when colliding with another GameObject.
+        healthCalculator.playerCurrentHealth -= outsideDamage;
+        // Plays the PlayerHurt Audio.
+        GetComponent<AudioSource>().Play();
 
-    public void DamagePlayer(int damage) {
-        stats.currentHealth -= damage;
-
-        if (stats.currentHealth <= 0)
-        {
-            GameMaster.KillPlayer(this);
+        // If Player's health hits or goes below zero.
+        if (healthCalculator.playerCurrentHealth <= 0) {
+            // Activate the RespawnPlayer sequence in the GameMaster.
+            gameMaster.RespawnPlayer();
+            // Reset the Player's health amount to Max once he respawns. 
+            healthCalculator.playerCurrentHealth = healthCalculator.playerMaxHealth;
         }
-        statusIndicator.SetHealth(stats.currentHealth, stats.maxHealth);
+
+        // Otherwise continue to update the StatusIndicator with the latest playerCurrentHealth values.
+        statusIndicator.SetHealth(healthCalculator.playerCurrentHealth, healthCalculator.playerMaxHealth);
     }
 }

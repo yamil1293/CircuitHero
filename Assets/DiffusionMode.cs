@@ -3,6 +3,7 @@ using System.Collections;
 
 public class DiffusionMode : MonoBehaviour {
 
+    /*
     [Header("Diffusion Damage")]
     [SerializeField] int diffusionStandard = 10;                       // The standard damage dealt by Diffusion Shots.
     [SerializeField] int diffusionCharged = 10;                       // The charged damage dealt by Diffusion Shots.
@@ -12,6 +13,7 @@ public class DiffusionMode : MonoBehaviour {
     [SerializeField] float diffRapidFireRate = 0;                         // Controls the rapid firing rate of Diffusion Shots.
     [SerializeField] float diffFullyCharged = 0;                      // Controls the time needed to charge lvl2 Diffusion Shots.
     [SerializeField] float diffSpiralCharged = 0;                      // Controls the time needed to charge lvl3 Diffusion Shots.
+    */
 
     /* 
         // [SerializeField] specialProperty = Paralysis, Force, Pierce or NA

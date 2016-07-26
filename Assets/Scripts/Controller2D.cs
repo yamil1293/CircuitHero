@@ -19,6 +19,7 @@ public class Controller2D : RaycastController {
     }
 
     public void Move(Vector3 velocity, Vector2 input, bool standingOnPlatform = false) {
+        // Update the Raycasting origins as the GameObject moves.
         UpdateRaycastOrigins();
         collisions.reset();
         collisions.velocityOld = velocity;
@@ -32,6 +33,7 @@ public class Controller2D : RaycastController {
             DescendSlope(ref velocity);
         }
 
+        // Passing a reference to this velocity variable
         HorizontalCollisions(ref velocity);
         if (velocity.y != 0) {
             VerticalCollisions(ref velocity);
@@ -95,17 +97,25 @@ public class Controller2D : RaycastController {
     }
 
     void VerticalCollisions(ref Vector3 velocity) {
+        // Getting the direction of our y velocity.
         float directionY = Mathf.Sign(velocity.y);
+
+        // The length of our ray for the y-axis.
         float rayLength = Mathf.Abs(velocity.y) + skinWidth;
 
+        // Used to draw out the rays for testing purposes.
         for (int i = 0; i < verticalRayCount; i++) {
+            // See what direction the GameObject is moving and where the Raycast should go.
             Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
             rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+           
+            // Main code for collisions by using the interactions from Raycasts and Layers.
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
-
+            // Draw the Raycasting lines for viewing.
             Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 
             if (hit) {
+                // If our Raycast hit something
                 if (hit.collider.tag == "Through") {
                     if (directionY == 1 || hit.distance == 0) {
                         continue;
@@ -113,13 +123,7 @@ public class Controller2D : RaycastController {
 
                     if (collisions.fallingThroughPlatform) {
                         continue;
-                    }
-
-                    if (playerInput.y == -1 && Input.GetButtonDown("Jump")) {
-                        collisions.fallingThroughPlatform = true;
-                        Invoke("ResetFallingThroughPlatform", .5f);
-                        continue;
-                    }
+                    }                                          
                 }
 
                 velocity.y = (hit.distance - skinWidth) * directionY;

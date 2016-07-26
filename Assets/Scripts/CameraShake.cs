@@ -6,31 +6,26 @@ public class CameraShake : MonoBehaviour {
     public Camera mainCamera;
     float shakeAmount = 0;
 
-    void Awake()
-    {
+    void Awake() {
         if (mainCamera == null) {
             mainCamera = Camera.main;
         }
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
+        if (Input.GetKeyDown(KeyCode.T)) {
             Shake(0.1f, 0.2f);
         }
     }
 
-    public void Shake(float amount, float length)
-    {
+    public void Shake(float amount, float length) {
         shakeAmount = amount;
         InvokeRepeating("DoShake", 0, 0.01f);
         Invoke("StopShake", length);
     }
 
-    void DoShake()
-    {
-        if (shakeAmount > 0)
-        {
+    void DoShake() {
+        if (shakeAmount > 0) {
             Vector3 cameraPosition = mainCamera.transform.position;
 
             float offsetX = Random.value * shakeAmount * 2 - shakeAmount;
@@ -42,8 +37,7 @@ public class CameraShake : MonoBehaviour {
         }
     }
 
-    void StopShake()
-    {
+    void StopShake() {
         CancelInvoke("DoShake");
         mainCamera.transform.localPosition = Vector3.zero;
     }
