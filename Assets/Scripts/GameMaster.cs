@@ -18,10 +18,9 @@ public class GameMaster : MonoBehaviour {
 
     public CameraShake cameraShake;
 
-    void Start()
-    {
-        if (cameraShake == null)
-        {
+    void Start() {
+
+        if (cameraShake == null) {
             Debug.LogError("No camera shake referenced in GameMaster.");
         }
     }
@@ -30,22 +29,21 @@ public class GameMaster : MonoBehaviour {
         GetComponent<AudioSource>().Play();
         yield return new WaitForSeconds(spawnDelay);
 
-        Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        Transform clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation) as Transform;
-        Destroy(clone.gameObject, 3f);
+        Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);       
+        GameObject clone = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation) as GameObject;
+        Destroy(clone, 3f);
     }
 
-    public static void KillPlayer (PlayerStatus playerStatus) {
-        Destroy(playerStatus.gameObject);
+    public static void KillPlayer (PlayerStatus player) {
+        Destroy(player.gameObject);
         gameMasterVariable.StartCoroutine (gameMasterVariable._RespawnPlayer());
     }
 
-    public static void KillEnemy(EnemyStatus enemy)
-    {
+    public static void KillEnemy(EnemyStatus enemy) {
         gameMasterVariable._KillEnemy(enemy);
     }
-    public void _KillEnemy(EnemyStatus _enemy)
-    {
+
+    public void _KillEnemy(EnemyStatus _enemy) {
         GameObject _clone =Instantiate(_enemy.deathParticles, _enemy.transform.position, Quaternion.identity) as GameObject;
         Destroy(_clone, 5f);
         Destroy(_enemy.gameObject);

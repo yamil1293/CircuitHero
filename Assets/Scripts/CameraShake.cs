@@ -4,13 +4,13 @@ using System.Collections;
 public class CameraShake : MonoBehaviour {
 
     public Camera mainCamera;
-
     float shakeAmount = 0;
 
     void Awake()
     {
-        if (mainCamera == null)
+        if (mainCamera == null) {
             mainCamera = Camera.main;
+        }
     }
 
     void Update() {

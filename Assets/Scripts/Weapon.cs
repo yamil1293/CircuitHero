@@ -19,8 +19,8 @@ public class Weapon : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         firePoint = transform.FindChild("FirePoint");
-        if (firePoint == null)
-        {
+
+        if (firePoint == null) {
             Debug.LogError("No firePoint? WHAT?!");
         }
 	}  
@@ -28,11 +28,11 @@ public class Weapon : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
        if (fireRate == 0) {
-            if (Input.GetButtonDown("Fire1"))
-            {
+            if (Input.GetButtonDown("Fire1")) {
                 Shoot();
             }
         }
+
         else {
             if (Input.GetButton("Fire1") && Time.time > timeToFire) {
                 timeToFire = Time.time + 1 / fireRate;
@@ -48,32 +48,30 @@ public class Weapon : MonoBehaviour {
         RaycastHit2D hit = Physics2D.Raycast(firePointPosition, mousePosition - firePointPosition,100,whatToHit);
        
         Debug.DrawLine(firePointPosition, (mousePosition-firePointPosition) * 100, Color.cyan);
-        if (hit.collider != null)
-        {
+
+        if (hit.collider != null) {
             Debug.DrawLine(firePointPosition, hit.point, Color.red);
             EnemyStatus enemy = hit.collider.GetComponent<EnemyStatus>();
-            if (enemy != null)
-            {
+
+            if (enemy != null) {
                 enemy.DamageEnemy(damage);
                 // Debug.Log("We hit " + hit.collider.name + " and did " + damage + " damage.");
             }
         }
 
-        if (Time.time >= timeToSpawnEffect)
-        {
+        if (Time.time >= timeToSpawnEffect) {
             Vector3 hitPosition;
             Vector3 hitNormal;
 
-            if (hit.collider == null)
-            {
+            if (hit.collider == null) {
                 hitPosition = (mousePosition - firePointPosition) * 30;
                 hitNormal = new Vector3(9999, 9999, 9999);
             }
+
             else {
                 hitPosition = hit.point;
                 hitNormal = hit.normal;
             }
-
             Effect(hitPosition, hitNormal);
             timeToSpawnEffect = Time.time + 1 / effectSpawnRate;
         }
@@ -83,16 +81,14 @@ public class Weapon : MonoBehaviour {
         Transform trail = Instantiate(BulletTrailPrefab, firePoint.position, firePoint.rotation) as Transform;
         LineRenderer lineRendererVariable = trail.GetComponent<LineRenderer>();
 
-        if (lineRendererVariable != null)
-        {
+        if (lineRendererVariable != null) {
             lineRendererVariable.SetPosition(0, firePoint.position);
             lineRendererVariable.SetPosition(1, hitPosition);
         }
 
         Destroy(trail.gameObject, 0.04f);
-
         if (hitNormal != new Vector3(9999, 9999, 9999)) {
-           Transform hitParticle = Instantiate(HitPrefab, hitPosition, Quaternion.FromToRotation(Vector3.right, hitNormal)) as Transform;
+            Transform hitParticle = Instantiate(HitPrefab, hitPosition, Quaternion.FromToRotation(Vector3.right, hitNormal)) as Transform;
             Destroy(hitParticle.gameObject, 1f);
         }
 

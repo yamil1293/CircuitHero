@@ -4,14 +4,13 @@ using System.Collections;
 public class CameraFollow : MonoBehaviour {
 
     public Controller2D target;
+    FocusArea focusArea;
 
     public float verticalOffset;
     public float lookAheadDistanceX;
     public float lookSmoothTimeX;
     public float verticalSmoothTime;
     public Vector2 focusAreaSize; 
-
-    FocusArea focusArea;
 
     float currentLookAheadX;
     float targetLookAheadX;
@@ -22,10 +21,10 @@ public class CameraFollow : MonoBehaviour {
     bool stopLookingAhead;
 
     void Start() {
-        focusArea = new FocusArea(target.boxCollider.bounds, focusAreaSize);
+        focusArea = new FocusArea(target.boxCollider.bounds, focusAreaSize);     
     }
-
-    void LateUpdate() {
+    
+    void LateUpdate() {      
         focusArea.Update(target.boxCollider.bounds);
         Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
 
@@ -45,7 +44,6 @@ public class CameraFollow : MonoBehaviour {
         }
              
         currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
-
         focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
         focusPosition += Vector2.right * currentLookAheadX;
         transform.position = (Vector3)focusPosition + Vector3.forward * -10;
@@ -70,17 +68,20 @@ public class CameraFollow : MonoBehaviour {
 
             velocity = Vector2.zero;
             center = new Vector2((left + right) / 2, (top + bottom) / 2);
-        }
+        }        
 
         public void Update(Bounds targetBounds) {
+
             float shiftX = 0;
             if (targetBounds.min.x < left)
             {
                 shiftX = targetBounds.min.x - left;
             }
+
             else if (targetBounds.max.x > right) {
                 shiftX = targetBounds.max.x - right;
             }
+
             left += shiftX;
             right += shiftX;
 
@@ -89,15 +90,16 @@ public class CameraFollow : MonoBehaviour {
             {
                 shiftY = targetBounds.min.y - bottom;
             }
+
             else if (targetBounds.max.y > top)
             {
                 shiftY = targetBounds.max.y - top;
             }
+
             top += shiftY;
             bottom += shiftY;
-
             center = new Vector2((left + right) / 2, (top + bottom) / 2);
             velocity = new Vector2(shiftX, shiftY);
         }
-    }     
+    }       
 }

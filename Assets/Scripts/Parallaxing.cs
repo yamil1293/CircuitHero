@@ -23,8 +23,7 @@ public class Parallaxing : MonoBehaviour {
 
         // Assigning corresponding parallaxScales
         parallaxScales = new float[backgrounds.Length];
-        for (int i = 0; i < backgrounds.Length; i++)
-        {
+        for (int i = 0; i < backgrounds.Length; i++) {
             parallaxScales[i] = backgrounds[i].position.z*-1;
         }
 	}
@@ -32,8 +31,7 @@ public class Parallaxing : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // For each background
-        for (int i = 0; i < backgrounds.Length; i++)
-        {
+        for (int i = 0; i < backgrounds.Length; i++) {
             // The parallax is the opposite of the camera movement because the previous frame multiplied by the scale
             float parallax = (previousCameraPosition.x - cameraTransform.position.x) * parallaxScales[i];
 
@@ -46,7 +44,6 @@ public class Parallaxing : MonoBehaviour {
             // Fade between current position and the target position using lerp
             backgrounds[i].position = Vector3.Lerp(backgrounds[i].position, backgroundTargetPosition, smoothing * Time.deltaTime);
         }
-
         // Set the previousCamPos to the camera's position at the end of the frame
         previousCameraPosition = cameraTransform.position;
 	}

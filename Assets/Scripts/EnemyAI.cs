@@ -4,8 +4,7 @@ using Pathfinding;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Seeker))]
-public class EnemyAI : MonoBehaviour
-{
+public class EnemyAI : MonoBehaviour {
 
     // What to chase?
     public Transform target;
@@ -24,8 +23,7 @@ public class EnemyAI : MonoBehaviour
     public float speed = 300f;
     public ForceMode2D forceMode;
 
-    [HideInInspector]
-    public bool pathIsEnded = false;
+    [HideInInspector] public bool pathIsEnded = false;
 
     // The max distance from the AI to a waypoint for it to continue to the next waypoint
     public float nextWaypointDistance = 3;
@@ -35,15 +33,12 @@ public class EnemyAI : MonoBehaviour
 
     private bool searchingForPlayer = false;
 
-    void Start()
-    {
+    void Start() {
         seeker = GetComponent<Seeker>();
         rigidBodyVariable = GetComponent<Rigidbody2D>();
 
-        if (target == null)
-        {
-            if (!searchingForPlayer)
-            {
+        if (target == null) {
+            if (!searchingForPlayer) {
                 searchingForPlayer = true;
                 StartCoroutine(SearchForPlayer());
             }
@@ -58,11 +53,11 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator SearchForPlayer() {
        GameObject searchResult = GameObject.FindGameObjectWithTag("Player");
-        if (searchResult == null)
-        {
+        if (searchResult == null) {
             yield return new WaitForSeconds(0.5f);
             StartCoroutine(SearchForPlayer());
         }
+
         else {
             target = searchResult.transform;
             searchingForPlayer = false;
@@ -71,16 +66,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    IEnumerator UpdatePath()
-    {
-        if (target == null)
-        {
-            if (!searchingForPlayer)
-            {
+    IEnumerator UpdatePath() {
+        if (target == null) {
+            if (!searchingForPlayer) { 
                 searchingForPlayer = true;
                 StartCoroutine(SearchForPlayer());
             }
-
             yield return false;
         }
 
@@ -91,22 +82,17 @@ public class EnemyAI : MonoBehaviour
         StartCoroutine(UpdatePath());
     }
 
-    public void OnPathComplete(Path pathWay)
-    {
+    public void OnPathComplete(Path pathWay) {
         Debug.Log("We got a path. Did it have an error? " + pathWay.error);
-        if (!pathWay.error)
-        {
+        if (!pathWay.error) {
             path = pathWay;
             currentWaypoint = 0;
         }
     }
 
-    void FixedUpdate()
-    {
-        if (target == null)
-        {
-            if (!searchingForPlayer)
-            {
+    void FixedUpdate() {
+        if (target == null) {
+            if (!searchingForPlayer) {
                 searchingForPlayer = true;
                 StartCoroutine(SearchForPlayer());
             }
@@ -114,19 +100,20 @@ public class EnemyAI : MonoBehaviour
         }
 
         //TODO: Always look at player?
-
-        if (path == null)
+        if (path == null) {
             return;
+        }
 
-        if (currentWaypoint >= path.vectorPath.Count)
-        {
-            if (pathIsEnded)
+        if (currentWaypoint >= path.vectorPath.Count) {
+            if (pathIsEnded) {
                 return;
+            }
 
             Debug.Log("End of path reached.");
             pathIsEnded = true;
             return;
         }
+
         pathIsEnded = false;
 
         //Direction to the next waypoint
@@ -137,11 +124,9 @@ public class EnemyAI : MonoBehaviour
         rigidBodyVariable.AddForce(directionToWaypoint, forceMode);
 
         float distanceTraveled = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
-        if (distanceTraveled < nextWaypointDistance)
-        {
+        if (distanceTraveled < nextWaypointDistance) {
             currentWaypoint++;
             return;
         }
     }
-
 }

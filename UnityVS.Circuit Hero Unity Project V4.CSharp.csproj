@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FEBA2516-109A-581E-2F63-B6BDEA01CDDB}</ProjectGuid>
+    <ProjectGuid>{2FB2DACA-3C74-9232-594F-771C047F2A7B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -146,9 +146,11 @@
     <Compile Include="Assets\AstarPathfindingProject\Utilities\ProfileHelper.cs" />
     <Compile Include="Assets\AstarPathfindingProject\Utilities\UnityReferenceHelper.cs" />
     <Compile Include="Assets\AstarPathfindingProject\changelog.cs" />
-    <Compile Include="Assets\CameraFollow.cs" />
+    <Compile Include="Assets\Checkpoints.cs" />
+    <Compile Include="Assets\KillPlayer.cs" />
+    <Compile Include="Assets\LevelManager.cs" />
     <Compile Include="Assets\Scripts\ArmRotation.cs" />
-    <Compile Include="Assets\Scripts\Camera2DFollow.cs" />
+    <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\CameraShake.cs" />
     <Compile Include="Assets\Scripts\Controller2D.cs" />
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
@@ -156,12 +158,6 @@
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\MoveTrail.cs" />
     <Compile Include="Assets\Scripts\MovingPlatformController.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\EasingFunctions.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\Globals.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\MovingPlatformMotor2D.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\PlatformerAnimation2D.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\PlatformerMotor2D.cs" />
-    <Compile Include="Assets\Scripts\PC2D Scripts\PlayerController2D.cs" />
     <Compile Include="Assets\Scripts\Parallaxing.cs" />
     <Compile Include="Assets\Scripts\PlayerConfig.cs" />
     <Compile Include="Assets\Scripts\PlayerStatus.cs" />

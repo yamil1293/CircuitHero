@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(SpriteRenderer))]
-
 public class Tiling : MonoBehaviour {
 
     public int offsetX = 2;                 // The offset so that we don't get any wierd errors
@@ -22,7 +21,6 @@ public class Tiling : MonoBehaviour {
         myTransform = transform;
     }
 
-
     // Use this for initialization
 	void Start () {
         SpriteRenderer spriteRendererVariable = GetComponent<SpriteRenderer>();
@@ -32,8 +30,7 @@ public class Tiling : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // Does it still need buddies? If not do nothing
-        if (hasALeftBuddy == false || hasARightBuddy == false)
-        {
+        if (hasALeftBuddy == false || hasARightBuddy == false) {
             // Calculate the cameras extend (half the width) of what the camera can see in world coordinates
             float cameraHorizonralExtend = cameraVariable.orthographicSize * Screen.width / Screen.height;
 
@@ -42,18 +39,17 @@ public class Tiling : MonoBehaviour {
             float edgeVisiblePositionLeft = (myTransform.position.x - spriteWidth/2) + cameraHorizonralExtend;
 
             // Checking if we can see the edge of the element and then calling MakeNewBuddy if we can
-            if (cameraVariable.transform.position.x >= edgeVisiblePositionRight - offsetX && hasARightBuddy == false)
-            {
+            if (cameraVariable.transform.position.x >= edgeVisiblePositionRight - offsetX && hasARightBuddy == false) {
                 MakeNewBuddy(1);
                 hasARightBuddy = true;
             }
-            else if (cameraVariable.transform.position.x <= edgeVisiblePositionLeft + offsetX && hasALeftBuddy == false)
-            {
+
+            else if (cameraVariable.transform.position.x <= edgeVisiblePositionLeft + offsetX && hasALeftBuddy == false) {
                 MakeNewBuddy(-1);
                 hasALeftBuddy = true;
             }
         }
-	}
+    }
 
     // A function that creates a buddy on the side required
     void MakeNewBuddy(int rightOrLeft) {
@@ -63,23 +59,22 @@ public class Tiling : MonoBehaviour {
         Transform newBuddy = Instantiate(myTransform, newPosition, myTransform.rotation) as Transform;
 
         // If not tilable let's reverse the x size of our object to get rid of ugly seams
-        if (reverseScale == true)
-        {
+        if (reverseScale == true) {
             newBuddy.localScale = new Vector3(newBuddy.localScale.x * -1, newBuddy.localScale.y, newBuddy.localScale.z);
         }
 
         newBuddy.parent = myTransform.parent;
-        if (rightOrLeft > 0)
-        {
+        if (rightOrLeft > 0) {
             newBuddy.GetComponent<Tiling>().hasALeftBuddy = true;
         }
+
         else {
             newBuddy.GetComponent<Tiling>().hasARightBuddy = true;
         }
     }
+
     // A Function that gets rid of GameObjects that are away from the Main Camera.
-    void OnBecameInvisible()
-    {
+    void OnBecameInvisible() {
         Destroy(gameObject);
     }       
 }
