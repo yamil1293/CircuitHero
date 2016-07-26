@@ -71,10 +71,10 @@ public class EnemyStatus : MonoBehaviour {
             enemyHasCollided = true;
 
             // Pass the collisionDamage amount to the PlayerStatus script.
-            other.GetComponent<PlayerStatus2>().DamagePlayer(collisionDamage);
+            other.GetComponent<PlayerStatus>().DamagePlayer(collisionDamage);
 
             // Checks to see if the Player is currently active within the game.
-            if (!other.GetComponent<PlayerStatus2>().gameObject.activeInHierarchy) {             
+            if (!other.GetComponent<PlayerStatus>().gameObject.activeInHierarchy) {             
                 // If not, this Enemy's GameObject will now report that Collision is no longer occuring.
                 enemyHasCollided = false;
             }
@@ -95,12 +95,12 @@ public class EnemyStatus : MonoBehaviour {
             // Checks to see if the Player is still currently colliding against this Enemy GameObject.
             if (enemyHasCollided == true) {
                 // If so, pass the collisionDamage amount to the PlayerStatus script.
-                GameObject.Find("Player").GetComponent<PlayerStatus2>().DamagePlayer(collisionDamage);
+                GameObject.Find("Player").GetComponent<PlayerStatus>().DamagePlayer(collisionDamage);
             }
         }
 
         // Checks to see if the Player is currently active within the game.
-        if (!other.GetComponent<PlayerStatus2>().gameObject.activeInHierarchy) {
+        if (!other.GetComponent<PlayerStatus>().gameObject.activeInHierarchy) {
             // If not, the Enemy's GameObject will now report that Collision is no longer occuring.
             enemyHasCollided = false;
         }

@@ -10,7 +10,18 @@ public class GameMaster : MonoBehaviour {
     [SerializeField] GameObject respawnParticle = null;             // Creates respawnParticles when the Player is respawned.
     [SerializeField] CameraShake cameraShake = null;                // Shakes the Main Camera violently when triggered.
       
-    private PlayerStatus2 player;                                    // Reference to the PlayerStatus script.
+    private PlayerStatus player;                                   // Reference to the PlayerStatus script.
+
+
+
+    [SerializeField] GameObject gameOverMenuCanvas = null;                        // Used to enable the Game Over Screen when death occurs.
+    [SerializeField] string backToTheTitleScreen = null;                          // Allows the User to type in the Title Screen Scene that will be used for this button.
+
+
+
+
+
+
 
     void Awake() {
         // In case gameMaster prefab cannot be found.
@@ -22,7 +33,7 @@ public class GameMaster : MonoBehaviour {
 
     void Start() {
         // Obtains the components from the PlayerStatus Script.
-        player = FindObjectOfType<PlayerStatus2>();   
+        player = FindObjectOfType<PlayerStatus>();   
         
         // In case the mainCamera prefab cannot be found.
         if (cameraShake == null) {
@@ -32,27 +43,30 @@ public class GameMaster : MonoBehaviour {
     }
      
     public void RespawnPlayer() {
-        // If the Player is killed, start the Respawning procedure.
-        StartCoroutine("RespawnPlayerCoroutine");
-    }
-
-    public IEnumerator RespawnPlayerCoroutine() {      
         // 1. Spawn the deathParticles when the Player is killed in the game.
         Instantiate(deathParticle, player.transform.position, player.transform.rotation);
-        
+
         // 2. Shuts off the Player Prefab temporarily.
         player.gameObject.SetActive(false);
 
+
+       // if (!gameOverMenuCanvas.SetActive) {
+            // If the Player is killed, start the Respawning procedure.
+           // StartCoroutine("RespawnPlayerCoroutine");
+       // }
+    }
+
+    public IEnumerator RespawnPlayerCoroutine() {      
         // 3. Spawns the Player to the location of a recent checkpoint.
         player.transform.position = currentCheckpoint.transform.position;
  
         // 4. Prevents the Player from respawning until the timelimit has passed.
         yield return new WaitForSeconds(respawnDelay);
-       
+
         // 5. Turns the Player Prefab back on again for continue play.
-        player.gameObject.SetActive(true);      
-       
+        player.gameObject.SetActive(true);
+
         // 6. When the Player respawns back at the checkpoint, release the respawnParticles.
-        Instantiate(respawnParticle, currentCheckpoint.transform.position, currentCheckpoint.transform.rotation);       
-    }   
+        Instantiate(respawnParticle, currentCheckpoint.transform.position, currentCheckpoint.transform.rotation);         
+    }
 }

@@ -5,10 +5,9 @@ using System.Collections;
 public class ShotDirection : MonoBehaviour {
 
     [SerializeField] int shotSpeed = 10;                              // The speed the shot can travel in the x and y axis.
-
-    BlasterManager arm;                                               // Reference to the BlasterManager configurations.
-    Controller2D playerController;                                    // Reference to the Controller2D configurations.                                            
-    Vector2 direction;                                                // Used to hold changes made to the x and y axis.
+    [HideInInspector] BlasterManager arm;                             // Reference to the BlasterManager configurations.
+    [HideInInspector] Controller2D playerController;                  // Reference to the Controller2D configurations.                                            
+    [HideInInspector] Vector2 direction;                              // Used to hold changes made to the x and y axis.
 
     void Start() {
         // Obtains the components from the Controller2D and BlasterManager Script.

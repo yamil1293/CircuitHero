@@ -19,9 +19,9 @@ public class BlasterManager : MonoBehaviour {
     public bool isThisAStandardShot = false;                      // Used to lock in Standard Shot when it is being fired.
     public bool isThisAChargingShot = false;                      // Used to lock in Charging Shot when it is being fired.
     public bool isThisAChargedShot = false;                       // Used to lock in Charged Shot when it is being fired.
-    public bool isThisASpiralShot = false;                        // Used to lock in Spiral Shot when it is being fired.
+    public bool isThisASecondChargedShot = false;                 // Used to lock in Second Charged Shot when it is being fired.
 
-    [HideInInspector] bool spiralShotChecked = false;             // Checks to see if a Spiral Blaster shot is made possible.
+    [HideInInspector] bool secondChargedShotChecked = false;      // Checks to see if a Second Charged Blaster shot is possible.
 
     void Awake() {
         // Obtains the firePoint's transform for its position usage.
@@ -49,8 +49,8 @@ public class BlasterManager : MonoBehaviour {
             powerModeIsOn = true;
         }
 
-        // If all 5 checks (standard, charging, charged, and spiral) are false, make isThisAStandardShot true by default.
-        if (isThisAStandardShot == false && isThisAChargingShot == false && isThisAChargedShot == false && isThisASpiralShot == false) {
+        // If all 4 checks (standard, charging, charged, and second charged) are false, make isThisAStandardShot true by default.
+        if (isThisAStandardShot == false && isThisAChargingShot == false && isThisAChargedShot == false && isThisASecondChargedShot == false) {
             // isThisAStandardShot will become true when everything else is (or becomes) false.
             isThisAStandardShot = true;
         }
@@ -61,7 +61,8 @@ public class BlasterManager : MonoBehaviour {
         Vector2 firePointPosition = new Vector2(firePoint.position.x, firePoint.position.y);
 
         // Checks to see if the Player presses the corresponding buttons to activate a Blaster Mode.
-        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.F2) || Input.GetKeyDown(KeyCode.F3) || Input.GetKeyDown(KeyCode.F4)) {
+        if (Input.GetAxisRaw("HorizontalSelect") < 0 || Input.GetAxisRaw("HorizontalSelect") > 0 || Input.GetAxisRaw("VerticalSelect") < 0 || 
+            Input.GetAxisRaw("VerticalSelect") > 0) {
             // If the Player does press a Blaster Mode button, start the Blaster Select procedure.
             StartCoroutine("BlasterSelectCoroutine");
         }
@@ -71,7 +72,6 @@ public class BlasterManager : MonoBehaviour {
             // If the Player does press the Shoot button, start the Charging Status procedure.
             StartCoroutine("ChargingStatusCoroutine");
         }
-
 
         // Checks for the rotation of the Arm prefab and any upward/downward inputs, if any.
         // While it appears to be 90 in the inspector, the actual rotation # is around .70f. 
@@ -84,18 +84,18 @@ public class BlasterManager : MonoBehaviour {
                 // Starts the chargingTimer counter which alters what shot is being fired.
                 blasterCalculations.chargingTimer = 0f;
 
-                // Checks to see if a Spiral Shot is ready to be fired. If not...
-                if (spiralShotChecked == false) {
+                // Checks to see if a Second Charged Shot is ready to be fired. If not...
+                if (secondChargedShotChecked == false) {
                     // Spawn the standardShot from the firePointPosition.
                     Instantiate(prefabBlasterManager.standardShot, firePointPosition, Quaternion.identity);
                 }
 
-                // Checks to see if a Spiral Shot is ready to be fired. If so...
-                if (spiralShotChecked == true) {
-                    // Spawn the spiralShot from the firePointPosition.
-                    Instantiate(prefabBlasterManager.spiralShot, firePointPosition, Quaternion.identity);
-                    // Make isThisASpiralShot false.
-                    spiralShotChecked = false;
+                // Checks to see if a Second Charged Shot is ready to be fired. If so...
+                if (secondChargedShotChecked == true) {
+                    // Spawn the secondChargedShot from the firePointPosition.
+                    Instantiate(prefabBlasterManager.secondChargedShot, firePointPosition, Quaternion.identity);
+                    // Make isThisASecondChargedShot false.
+                    secondChargedShotChecked = false;
                 }
             }
 
@@ -104,10 +104,12 @@ public class BlasterManager : MonoBehaviour {
                 // Tracks the amount of time the Player holds the button down.
                 blasterCalculations.chargingTimer += Time.deltaTime;
 
-                // Checks to see if the chargingTimer has reached or surpased the spiralChargedLimit.
-                if (blasterCalculations.chargingTimer >= blasterCalculations.spiralChargedLimit) {
-                    // Make isThisASpiralShot true.
-                    spiralShotChecked = true;
+                // Checks to see if the chargingTimer has reached or surpased the secondChargedLimit.
+                if (blasterCalculations.chargingTimer >= blasterCalculations.secondChargedLimit) {
+                    // Lock the chargingTimer to the secondChargedLimit amount.
+                    blasterCalculations.chargingTimer = blasterCalculations.secondChargedLimit;
+                    // Make isThisASecondChargedShot true.
+                    secondChargedShotChecked = true;
                 }
             }
 
@@ -138,7 +140,7 @@ public class BlasterManager : MonoBehaviour {
 
     IEnumerator BlasterSelectCoroutine() {
         // If the Player presses this button for Power Mode...
-        if (Input.GetKeyDown(KeyCode.F1)) {
+        if (Input.GetAxisRaw("VerticalSelect") > 0) { 
             // powerModeIsOn will switch to true while everything else will become false.
             powerModeIsOn = true;
             magneticModeIsOn = false;
@@ -147,9 +149,9 @@ public class BlasterManager : MonoBehaviour {
             // Stop the BlasterSelectCoroutine right here.
             yield return null;
         }
-        
+
         // If the Player presses this button for Magnetic Mode...
-        else if (Input.GetKeyDown(KeyCode.F2)) {
+        else if (Input.GetAxisRaw("HorizontalSelect") > 0) {
             // magneticModeIsOn will switch to true while everything else will become false.
             powerModeIsOn = false;
             magneticModeIsOn = true;
@@ -158,9 +160,9 @@ public class BlasterManager : MonoBehaviour {
             // Stop the BlasterSelectCoroutine right here.
             yield return null;
         }
- 
+
         // If the Player presses this button for Thermal Mode...
-        else if (Input.GetKeyDown(KeyCode.F3)) {
+        else if (Input.GetAxisRaw("VerticalSelect") < 0) {
             // thermalModeIsOn will switch to true while everything else will become false.
             powerModeIsOn = false;
             magneticModeIsOn = false;
@@ -171,7 +173,7 @@ public class BlasterManager : MonoBehaviour {
         }
 
         // If the Player presses this button for Diffusion Mode...
-        else if (Input.GetKeyDown(KeyCode.F4)) {
+        else if (Input.GetAxisRaw("HorizontalSelect") < 0) {
             // diffusionModeIsOn will switch to true while everything else will become false.
             powerModeIsOn = false;
             magneticModeIsOn = false;
@@ -206,13 +208,13 @@ public class BlasterManager : MonoBehaviour {
             // Code checks if the negative vertical input is done in the air.
             if (!playerControl.collisions.below) {
                 // Checks to see if the Player is moving/facing right.
-                if (transform.localScale.x > 0)                {
+                if (transform.localScale.x > 0) {
                     // Used to make the Player shoot downwards when holding down.
                     transform.rotation = Quaternion.Euler(0, 0, 270);
                 }
 
                 // Checks to see if the Player is moving/facing left.
-                if (transform.localScale.x < 0)                {
+                if (transform.localScale.x < 0) {
                     // Used to make the Player shoot downwards when holding down.
                     transform.rotation = Quaternion.Euler(0, 0, -270);
                 }              
@@ -239,22 +241,22 @@ public class BlasterManager : MonoBehaviour {
    
     IEnumerator ChargingStatusCoroutine() {
         // Checks to see if a Standard Shot is possible.
-        if (blasterCalculations.chargingTimer < blasterCalculations.beginCharging && spiralShotChecked == false) {       
+        if (blasterCalculations.chargingTimer < blasterCalculations.beginCharging && secondChargedShotChecked == false) {       
             // Set isThisAStandardShot to true, make the rest false.
             isThisAStandardShot = true;
             isThisAChargingShot = false;
             isThisAChargedShot = false;
-            isThisASpiralShot = false;
+            isThisASecondChargedShot = false;
         }
 
         // Checks to see if a Charging Shot is possible.
         else if (blasterCalculations.beginCharging < blasterCalculations.chargingTimer 
-            && blasterCalculations.chargingTimer < blasterCalculations.fullyChargedLimit)        {
+            && blasterCalculations.chargingTimer < blasterCalculations.fullyChargedLimit) {
             // Set isThisAChargingShot to true, make the rest false.
             isThisAStandardShot = false;
             isThisAChargingShot = true;
             isThisAChargedShot = false;
-            isThisASpiralShot = false;
+            isThisASecondChargedShot = false;
 
             // When the Player releases the button here, make this true.
             if (Input.GetButtonUp("Shoot")) {
@@ -264,12 +266,12 @@ public class BlasterManager : MonoBehaviour {
 
         // Checks to see if a Charged Shot is possible.
         else if (blasterCalculations.chargingTimer > blasterCalculations.fullyChargedLimit 
-            && blasterCalculations.chargingTimer < blasterCalculations.spiralChargedLimit)        {
+            && blasterCalculations.chargingTimer < blasterCalculations.secondChargedLimit) {
             // Set isThisAChargedShot to true, make the rest false.
             isThisAStandardShot = false;
             isThisAChargingShot = false;
             isThisAChargedShot = true;
-            isThisASpiralShot = false;
+            isThisASecondChargedShot = false;
 
             // When the Player releases the button here, make this true.
             if (Input.GetButtonUp("Shoot")) {
@@ -278,7 +280,7 @@ public class BlasterManager : MonoBehaviour {
         }
 
         // Checks to see if a Spiral Shot is possible.
-        else if (blasterCalculations.chargingTimer >= blasterCalculations.spiralChargedLimit ) {
+        else if (blasterCalculations.chargingTimer >= blasterCalculations.secondChargedLimit) {
             // Set isThisASpiralShot to true, make the rest false.
             isThisAStandardShot = false;
             isThisAChargingShot = false;
@@ -291,7 +293,7 @@ public class BlasterManager : MonoBehaviour {
 
             // Once the Shoot button is let go, set everything else to false.
             isThisAChargedShot = false;
-            isThisASpiralShot = true;
+            isThisASecondChargedShot = true;
         }
         yield return null;
     }       
