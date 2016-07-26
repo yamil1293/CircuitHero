@@ -2,43 +2,122 @@ using UnityEngine;
 using System.Collections;
 
 public class PrefabBlasterManager : MonoBehaviour {
+  
+    // BlasterPrefabList class is now accessible in other scripts and inspector.           
+    public BlasterPrefabList blasterPrefabList = new BlasterPrefabList();
+    // BlasterImpactList class is now accessible in other scripts and inspector.           
+    public BlasterImpactList blasterImpactList = new BlasterImpactList();
 
-    /*
-    [Header("Power Mode Blaster Prefabs")]
-    [SerializeField] Transform standardPMPrefab = null;                 // The standard damage dealt by Power Shots.
-    [SerializeField] Transform chargingPMPrefab = null;                 // The standard damage dealt by Power Shots.
-    [SerializeField] Transform chargedPMPrefab = null;                  // The charged damage dealt by Power Shots.
-    [SerializeField] Transform fusionPMPrefab = null;                   // The fusion strike damage dealt by Power Shots.
+    [Header("Current Blaster Prefabs")]
+    public GameObject standardShot = null;                       // Holds the standard shot that is to be fired by the Player.
+    public GameObject chargingShot = null;                       // Holds the charging shot that is to be fired by the Player.    
+    public GameObject chargedShot = null;                        // Holds the charged shot that is to be fired by the Player.    
+    public GameObject spiralShot = null;                         // Holds the spiral shot that is to be fired by the Player.
+    public GameObject fusionShot = null;                         // Holds the fusion shot that is to be fired by the Player.
 
-    [Header("Magnetic Mode Blaster Prefabs")]
-    [SerializeField] Transform standardMMPrefab = null;                 // The standard damage dealt by Magnetic Shots.
-    [SerializeField] Transform chargingMMPrefab = null;                 // The charged damage dealt by Magnetic Shots.
-    [SerializeField] Transform chargedMMPrefab = null;                  // The fusion strike damage dealt by Magnetic Shots.
-    [SerializeField] Transform fusionMMPrefab = null;                   // The fusion strike damage dealt by Power Shots.
+    [Header("Current Impact Prefabs")]
+    public GameObject impactEffect = null;                       // Holds the impactEffect that is created by its shot collision.
 
-    [Header("Thermal Mode Blaster Prefabs")]
-    [SerializeField] Transform standardTMPrefab = null;                 // The standard damage dealt by Thermal Shots.
-    [SerializeField] Transform chargingTMPrefab = null;                 // The charged damage dealt by Thermal Shots.
-    [SerializeField] Transform chargedTMPrefab = null;                  // The fusion strike damage dealt by Thermal Shots.
-    [SerializeField] Transform fusionTMPrefab = null;                   // The fusion strike damage dealt by Power Shots.
+    // Holds all of the prefabs for the 4 Blaster Modes.
+    [System.Serializable] public class BlasterPrefabList {
+        [Header("Power Mode Blaster Prefabs")]
+        public GameObject standardPowerPrefab = null;             // Holds the Power Mode standard shot in the inspector.
+        public GameObject chargingPowerPrefab = null;             // Holds the Power Mode charging shot in the inspector.
+        public GameObject chargedPowerPrefab = null;              // Holds the Power Mode charged shot in the inspector.
+        public GameObject fusionPowerPrefab = null;               // Holds the Power Mode fusion shot in the inspector.
 
-    [Header("Diffusion Mode Blaster Prefabs")]
-    [SerializeField] Transform standardDMPrefab = null;                 // The standard damage dealt by Diffusion Shots.
-    [SerializeField] Transform chargingDMPrefab = null;                 // The charged damage dealt by Diffusion Shots.
-    [SerializeField] Transform chargedDMPrefab = null;                  // The fusion strike damage dealt by Diffusion Shots.
-    [SerializeField] Transform fusionDMPrefab = null;                   // The fusion strike damage dealt by Power Shots.  
+        [Header("Magnetic Mode Blaster Prefabs")]
+        public GameObject standardMagntPrefab = null;             // Holds the Magnetic Mode standard shot in the inspector.
+        public GameObject chargingMagntPrefab = null;             // Holds the Magnetic Mode charging shot in the inspector.
+        public GameObject chargedMagntPrefab = null;              // Holds the Magnetic Mode charged shot in the inspector.
+        public GameObject fusionMagntPrefab = null;               // Holds the Magnetic Mode fusion shot in the inspector.
 
-    [Header("All Mode Blaster Prefabs")]
-    [SerializeField] Transform spiralShotPrefab = null;                 // The damage dealt by the second charged Shot.   
-    */
+        [Header("Thermal Mode Blaster Prefabs")]
+        public GameObject standardThrmlPrefab = null;             // Holds the Thermal Mode standard shot in the inspector.
+        public GameObject chargingThrmlPrefab = null;             // Holds the Thermal Mode charging shot in the inspector.
+        public GameObject chargedThrmlPrefab = null;              // Holds the Thermal Mode charged shot in the inspector.
+        public GameObject fusionThrmlPrefab = null;               // Holds the Thermal Mode fusion shot in the inspector.
 
-    // Use this for initialization
+        [Header("Diffusion Mode Blaster Prefabs")]
+        public GameObject standardDffsnPrefab = null;             // Holds the Diffusion Mode standard shot in the inspector.
+        public GameObject chargingDffsnPrefab = null;             // Holds the Diffusion Mode charging shot in the inspector.
+        public GameObject chargedDffsnPrefab = null;              // Holds the Diffusion Mode charged shot in the inspector.
+        public GameObject fusionDffsnPrefab = null;               // Holds the Diffusion Mode fusion shot in the inspector.
+
+        [Header("All Mode Blaster Prefabs")]
+        public GameObject spiralShotPrefab = null;                // Holds the Spiral shot for all Modes in the inspector. 
+    }
+
+    // Holds all of the impacts for the 4 Blaster Modes.
+    [System.Serializable] public class BlasterImpactList {
+        public GameObject powerImpactEffect = null;               // Holds the Power Mode particle used for their collisions.
+        public GameObject magneticImpactEffect = null;            // Holds the Magnetic Mode particle used for their collisions.
+        public GameObject thermalImpactEffect = null;             // Holds the Thermal Mode particle used for their collisions.
+        public GameObject diffusionImpactEffect = null;           // Holds the Diffusion Mode particle used for their collisions.
+    }
+
+    BlasterManager blasterManager;                                // References the BlasterManager configurations.
+
     void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        // Obtains the components from the BlasterManager script.
+        blasterManager = GetComponent<BlasterManager>();
+    }
+
+    void Update () {
+        // Checks to see if any of the 4 locks (power, magnetic, thermal and diffusion) are true.
+        if (blasterManager.powerModeIsOn == true || blasterManager.magneticModeIsOn == true || blasterManager.thermalModeIsOn == true 
+            || blasterManager.diffusionModeIsOn == true) {
+            // If so, start the Blaster Prefab procedure.
+            StartCoroutine("BlasterPrefabCoroutine");
+        }        
+    }
+
+     public IEnumerator BlasterPrefabCoroutine() {
+        // The spiral shot will always have the same prefab for all Blaster Modes.
+        spiralShot = blasterPrefabList.spiralShotPrefab;
+
+        // Checks to see if Power Mode was currently selected by the Player.
+        if (blasterManager.powerModeIsOn == true) {
+            // If so, ready all Power Mode shot prefabs to be instantiated.
+            standardShot = blasterPrefabList.standardPowerPrefab;
+            chargingShot = blasterPrefabList.chargingPowerPrefab;
+            chargedShot = blasterPrefabList.chargedPowerPrefab;
+            fusionShot = blasterPrefabList.fusionPowerPrefab;
+            impactEffect = blasterImpactList.powerImpactEffect;
+            yield return null;
+        }
+
+        // Checks to see if Magnetic Mode was currently selected by the Player.
+        else if (blasterManager.magneticModeIsOn == true) {
+            // If so, ready all Magnetic Mode shot prefabs to be instantiated.
+            standardShot = blasterPrefabList.standardMagntPrefab;
+            chargingShot = blasterPrefabList.chargingMagntPrefab;
+            chargedShot = blasterPrefabList.chargedMagntPrefab;
+            fusionShot = blasterPrefabList.fusionMagntPrefab;
+            impactEffect = blasterImpactList.magneticImpactEffect;
+            yield return null;
+        }
+
+        // Checks to see if Thermal Mode was currently selected by the Player.
+        else if (blasterManager.thermalModeIsOn == true) {
+            // If so, ready all Thermal Mode shot prefabs to be instantiated.
+            standardShot = blasterPrefabList.standardThrmlPrefab;
+            chargingShot = blasterPrefabList.chargingThrmlPrefab;
+            chargedShot = blasterPrefabList.chargedThrmlPrefab;
+            fusionShot = blasterPrefabList.fusionThrmlPrefab;
+            impactEffect = blasterImpactList.thermalImpactEffect;
+            yield return null;
+        }
+
+        // Checks to see if Diffusion Mode was currently selected by the Player.
+        else if (blasterManager.diffusionModeIsOn == true) {
+            // If so, ready all Diffusion Mode shot prefabs to be instantiated.
+            standardShot = blasterPrefabList.standardDffsnPrefab;
+            chargingShot = blasterPrefabList.chargingDffsnPrefab;
+            chargedShot = blasterPrefabList.chargedDffsnPrefab;
+            fusionShot = blasterPrefabList.fusionDffsnPrefab;
+            impactEffect = blasterImpactList.diffusionImpactEffect;
+            yield return null;
+        }    
+    }
 }

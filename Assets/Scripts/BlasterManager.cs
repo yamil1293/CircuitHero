@@ -1,98 +1,190 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(BlasterCalculations))]
+[RequireComponent(typeof(PrefabBlasterManager))]
 public class BlasterManager : MonoBehaviour {
 
-    [Header("Charging Blaster")]
-    [SerializeField] float chargingTimer = 0.0f;                      // Used as a timer/counter for the Player's charging.
-    [SerializeField] float fullyChargedLimit = 0.0f;                  // Controls the time needed to charge lvl2 Blaster Shots.
-    [SerializeField] float spiralChargedLimit = 0.0f;                 // Controls the time needed to charge lvl3 Blaster Shots.
-    [HideInInspector] bool spiralShotIsReady = false;                 // Controls whether a standard or a spiral shot is being fired.
+    Transform firePoint;                                          // Used to get the local position of the firePoint GameObject.
+    Controller2D playerControl;                                   // References the Controller2D configurations.
+    BlasterManager blasterManager;                                // References the BlasterManager configurations.
+    PrefabBlasterManager prefabBlasterManager;                    // References the PrefabBlasterManager configurations.
+    BlasterCalculations blasterCalculations;                      // References the BlasterCalculations configurations.
 
-    [Header("Firing Blaster")]  
-    [SerializeField] GameObject standardShot = null;                  // Holds the standard shot fired by the Player.
-    [SerializeField] GameObject chargingShot = null;                  // Holds the charging shot fired by the Player.    
-    [SerializeField] GameObject chargedShot = null;                   // Holds the charged shot fired by the Player.    
-    [SerializeField] GameObject spiralShot = null;                    // Holds the spiral shot fired by the Player.
+    public bool powerModeIsOn = false;                            // Used to lock in Power Mode when it is being used.
+    public bool magneticModeIsOn = false;                         // Used to lock in Magnetic Mode when it is being used.
+    public bool thermalModeIsOn = false;                          // Used to lock in Thermal Mode when it is being used.
+    public bool diffusionModeIsOn = false;                        // Used to lock in Diffusion Mode when it is being used.
 
-    Transform firePoint;                                              // Used to get the local position of the firePoint GameObject.
-    Controller2D playerControl;                                       // References the Controller2D configurations.
-    BlasterManager arm;                                               // References the BlasterManager configurations.
+    public bool isThisAStandardShot = false;                      // Used to lock in Standard Shot when it is being fired.
+    public bool isThisAChargingShot = false;                      // Used to lock in Charging Shot when it is being fired.
+    public bool isThisAChargedShot = false;                       // Used to lock in Charged Shot when it is being fired.
+    public bool isThisAFusionShot = false;                        // Used to lock in Fusion Shot when it is being fired.
+    public bool isThisASpiralShot = false;                        // Used to lock in Spiral Shot when it is being fired.
 
-    void Start() {
-        // Obtains the components from the Controller2D and BlasterManager Script.
-        playerControl = GetComponentInParent<Controller2D>();
-        arm = FindObjectOfType<BlasterManager>();
-    }
+    [HideInInspector] bool spiralShotChecked = false;             // Checks to see if a Spiral Blaster shot is made possible.
 
     void Awake() {
         // Obtains the firePoint's transform for its position usage.
         firePoint = transform.FindChild("FirePoint");
-        // Checks to see if the firePoint still exists.
+
         if (firePoint == null) {
+            // Provides an alert that the firePoint no longer exists.
             Debug.LogError("No firePoint? WHAT?!");
         }                   
     }
 
-        void Update() {
-        // Used to obtain the x position and y position of firePoint.
+    void Start() {
+        // Obtains the components from the Controller2D script.
+        playerControl = GetComponentInParent<Controller2D>();
+        // Obtains the components from the BlasterManager script.
+        blasterManager = FindObjectOfType<BlasterManager>();
+        // Obtains the components from the PrefabBlasterManager script.
+        prefabBlasterManager = GetComponent<PrefabBlasterManager>();
+        // Obtains the components from the BlasterCalculations script.
+        blasterCalculations = GetComponent<BlasterCalculations>();
+ 
+        // If all 4 locks (power, magnetic, thermal and diffusion) are false, make powerModeIsOn true by default.
+        if (powerModeIsOn == false && magneticModeIsOn == false && thermalModeIsOn == false && diffusionModeIsOn == false) {
+            // powerModeIsOn will become true when everything else is (or becomes) false.
+            powerModeIsOn = true;
+        }
+
+        // If all 5 checks (standard, charging, charged, fusion and spiral) are false, make isThisAStandardShot true by default.
+        if (isThisAStandardShot == false && isThisAChargingShot == false && isThisAChargedShot == false && isThisAFusionShot == false
+            && isThisASpiralShot == false) {
+            // isThisAStandardShot will become true when everything else is (or becomes) false.
+            isThisAStandardShot = true;
+        }
+    }
+
+    void Update() {
+        // Used to obtain the x and y position of firePoint.
         Vector2 firePointPosition = new Vector2(firePoint.position.x, firePoint.position.y);
+
+        // Checks to see if the Player presses the corresponding buttons to activate a Blaster Mode.
+        if (Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.F2) || Input.GetKeyDown(KeyCode.F3) || Input.GetKeyDown(KeyCode.F4)) {
+            // If the Player does press a Blaster Mode button, start the Blaster Select procedure.
+            StartCoroutine("BlasterSelectCoroutine");
+        }
+
+        // Checks to see if the Player presses the Shoot button.
+        if (Input.GetButtonDown("Shoot") || Input.GetButton("Shoot") || Input.GetButtonUp("Shoot")) {
+            // If the Player does press the Shoot button, start the Charging Status procedure.
+            StartCoroutine("ChargingStatusCoroutine");
+        }
+
 
         // Checks for the rotation of the Arm prefab and any upward/downward inputs, if any.
         // While it appears to be 90 in the inspector, the actual rotation # is around .70f. 
-        if ((arm.transform.localRotation.z == 0.0f && Input.GetAxisRaw("VerticalMove") == 0)
-           || (arm.transform.localRotation.z > 0.700f && (Input.GetAxisRaw("VerticalMove") == 1
-           || Input.GetAxisRaw("VerticalMove") == -1))) {
-
+        if ((blasterManager.transform.localRotation.z == 0.0f && Input.GetAxisRaw("VerticalMove") == 0)           
+           || (blasterManager.transform.localRotation.z == 0.0f && Input.GetAxisRaw("VerticalMove") == -1 && playerControl.collisions.below)
+           || (blasterManager.transform.localRotation.z > 0.700f && (Input.GetAxisRaw("VerticalMove") == 1 || Input.GetAxisRaw("VerticalMove") == -1))) {
+                     
             // Fires the standard/spiral shot Prefab with the ShotTrail script doing the rest.        
             if (Input.GetButtonDown("Shoot")) {
                 // Starts the chargingTimer counter which alters what shot is being fired.
-                chargingTimer = 0f;
+                blasterCalculations.chargingTimer = 0f;
 
                 // Checks to see if a Spiral Shot is ready to be fired. If not...
-                if (spiralShotIsReady == false) {
+                if (spiralShotChecked == false) {
                     // Spawn the standardShot from the firePointPosition.
-                    Instantiate(standardShot, firePointPosition, Quaternion.identity);
+                    Instantiate(prefabBlasterManager.standardShot, firePointPosition, Quaternion.identity);
                 }
 
                 // Checks to see if a Spiral Shot is ready to be fired. If so...
-                if (spiralShotIsReady == true) {
+                if (spiralShotChecked == true) {
                     // Spawn the spiralShot from the firePointPosition.
-                    // Then set the spiralShot check back to false so it can only be done once per charge.
-                    Instantiate(spiralShot, firePointPosition, Quaternion.identity);
-                    spiralShotIsReady = false;
+                    Instantiate(prefabBlasterManager.spiralShot, firePointPosition, Quaternion.identity);
+                    // Make isThisASpiralShot false.
+                    spiralShotChecked = false;
                 }
             }
 
             // Used to control the charging rate of the Blaster as long as the button is being held.
             if (Input.GetButton("Shoot")) {
                 // Tracks the amount of time the Player holds the button down.
-                chargingTimer += Time.deltaTime;
+                blasterCalculations.chargingTimer += Time.deltaTime;
 
                 // Checks to see if the chargingTimer has reached or surpased the spiralChargedLimit.
-                if (chargingTimer >= spiralChargedLimit) {
-                    // If so, set the spiralShot check to true to instantiate it.
-                    spiralShotIsReady = true;
+                if (blasterCalculations.chargingTimer >= blasterCalculations.spiralChargedLimit) {
+                    // Make isThisASpiralShot true.
+                    spiralShotChecked = true;
                 }
             }
 
             // Used to fire a stronger Blaster shot if the chargingTimer has passed a certain limit.
             if (Input.GetButtonUp("Shoot")) {
-                // Checks to see if the chargingTimer has exceeded 0.2f to prevent accidental charging.
-                // Also check to see if the chargingTimer hasn't reached the fullyChargedLimit.
-                if (0.35f < chargingTimer && chargingTimer < fullyChargedLimit) {
+                // Checks to see if the chargingTimer hasn't passed the beginCharging Limit to prevent accidental charging.
+                // Also checks to see if the chargingTimer hasn't reached/passed the fullyChargedLimit.
+                if (blasterCalculations.beginCharging < blasterCalculations.chargingTimer 
+                    && blasterCalculations.chargingTimer < blasterCalculations.fullyChargedLimit) {
                     // If so, instantiate the chargingShot from the firePointPosition.
-                    Instantiate(chargingShot, firePointPosition, Quaternion.identity);
+                    Instantiate(prefabBlasterManager.chargingShot, firePointPosition, Quaternion.identity);
                 }
 
                 // Checks to see if the chargingTimer has reached or surpased the fullyChargedLimit.
-                if (chargingTimer >= fullyChargedLimit) {               
+                if (blasterCalculations.chargingTimer >= blasterCalculations.fullyChargedLimit) {
                     // If so, instantiate the chargedShot from the firePointPosition.
-                    Instantiate(chargedShot, firePointPosition, Quaternion.identity);
+                    Instantiate(prefabBlasterManager.chargedShot, firePointPosition, Quaternion.identity);
                 }
             }
         }
-       
+
+        // Checks to see if the Player alters the Vertical Move variable by aiming up, down or moving back to default.
+        if (Input.GetAxisRaw("VerticalMove") == 1 || Input.GetAxisRaw("VerticalMove") == -1 || Input.GetAxisRaw("VerticalMove") == 0) {
+            // If the Player aims up, down or moves back to default, start the Arm Rotation procedure.
+            StartCoroutine("ArmRotationCoroutine");
+        }
+    }
+
+    IEnumerator BlasterSelectCoroutine() {
+        // If the Player presses this button for Power Mode...
+        if (Input.GetKeyDown(KeyCode.F1)) {
+            // powerModeIsOn will switch to true while everything else will become false.
+            powerModeIsOn = true;
+            magneticModeIsOn = false;
+            thermalModeIsOn = false;
+            diffusionModeIsOn = false;
+            // Stop the BlasterSelectCoroutine right here.
+            yield return null;
+        }
+        
+        // If the Player presses this button for Magnetic Mode...
+        else if (Input.GetKeyDown(KeyCode.F2)) {
+            // magneticModeIsOn will switch to true while everything else will become false.
+            powerModeIsOn = false;
+            magneticModeIsOn = true;
+            thermalModeIsOn = false;
+            diffusionModeIsOn = false;
+            // Stop the BlasterSelectCoroutine right here.
+            yield return null;
+        }
+ 
+        // If the Player presses this button for Thermal Mode...
+        else if (Input.GetKeyDown(KeyCode.F3)) {
+            // thermalModeIsOn will switch to true while everything else will become false.
+            powerModeIsOn = false;
+            magneticModeIsOn = false;
+            thermalModeIsOn = true;
+            diffusionModeIsOn = false;
+            // Stop the BlasterSelectCoroutine right here.
+            yield return null;
+        }
+
+        // If the Player presses this button for Diffusion Mode...
+        else if (Input.GetKeyDown(KeyCode.F4)) {
+            // diffusionModeIsOn will switch to true while everything else will become false.
+            powerModeIsOn = false;
+            magneticModeIsOn = false;
+            thermalModeIsOn = false;
+            diffusionModeIsOn = true;
+            // Stop the BlasterSelectCoroutine right here.
+            yield return null;
+        }                         
+    }
+
+    IEnumerator ArmRotationCoroutine() {
         // Takes a positive vertical input from the player when holding up.
         if (Input.GetAxisRaw("VerticalMove") == 1) {
             // Checks to see if the Player is moving/facing right.
@@ -106,6 +198,9 @@ public class BlasterManager : MonoBehaviour {
                 // Used to make the Player shoot upwards when holding up.
                 transform.rotation = Quaternion.Euler(0, 0, -90);
             }
+
+            // Stop the ArmRotationCoroutine right here.
+            yield return null;
         }
 
         // Takes a negative vertical input from the player when holding down.
@@ -122,20 +217,84 @@ public class BlasterManager : MonoBehaviour {
                 if (transform.localScale.x < 0)                {
                     // Used to make the Player shoot downwards when holding down.
                     transform.rotation = Quaternion.Euler(0, 0, -270);
-                }
+                }              
             }
 
             // Code checks if the negative vertical input is done in the ground.
             if (playerControl.collisions.below) {
                 // Snaps the Player's arm back to its default position regardless of button press.
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-            }       
+            }
+
+            // Stop the ArmRotationCoroutine right here.
+            yield return null;      
         }
 
         // Takes a neutral vertical input from the player when nothing is held.
         if (Input.GetAxisRaw("VerticalMove") == 0) {
             // Prevents the Player from shoot upwards or downwards if the up/down button isn't being held.
             transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+            // Stop the ArmRotationCoroutine right here.
+            yield return null;
+        } 
     }
+   
+    IEnumerator ChargingStatusCoroutine() {
+        // Checks to see if a Standard Shot is possible.
+        if (blasterCalculations.chargingTimer < blasterCalculations.beginCharging && spiralShotChecked == false) {       
+            // Set isThisAStandardShot to true, make the rest false.
+            isThisAStandardShot = true;
+            isThisAChargingShot = false;
+            isThisAChargedShot = false;
+            isThisASpiralShot = false;
+        }
+
+        // Checks to see if a Charging Shot is possible.
+        else if (blasterCalculations.beginCharging < blasterCalculations.chargingTimer 
+            && blasterCalculations.chargingTimer < blasterCalculations.fullyChargedLimit)        {
+            // Set isThisAChargingShot to true, make the rest false.
+            isThisAStandardShot = false;
+            isThisAChargingShot = true;
+            isThisAChargedShot = false;
+            isThisASpiralShot = false;
+
+            // When the Player releases the button here, make this true.
+            if (Input.GetButtonUp("Shoot")) {
+                isThisAStandardShot = true;
+            }
+        }
+
+        // Checks to see if a Charged Shot is possible.
+        else if (blasterCalculations.chargingTimer > blasterCalculations.fullyChargedLimit 
+            && blasterCalculations.chargingTimer < blasterCalculations.spiralChargedLimit)        {
+            // Set isThisAChargedShot to true, make the rest false.
+            isThisAStandardShot = false;
+            isThisAChargingShot = false;
+            isThisAChargedShot = true;
+            isThisASpiralShot = false;
+
+            // When the Player releases the button here, make this true.
+            if (Input.GetButtonUp("Shoot")) {
+                isThisAStandardShot = true;
+            }
+        }
+
+        // Checks to see if a Spiral Shot is possible.
+        else if (blasterCalculations.chargingTimer >= blasterCalculations.spiralChargedLimit ) {
+            // Set isThisASpiralShot to true, make the rest false.
+            isThisAStandardShot = false;
+            isThisAChargingShot = false;
+            
+            // Keep this true until the Player releases the Shoot Button.
+            while (Input.GetButton("Shoot")) {
+                isThisAChargedShot = true;
+                yield return null;
+            }
+
+            // Once the Shoot button is let go, set everything else to false.
+            isThisAChargedShot = false;
+            isThisASpiralShot = true;
+        }
+        yield return null;
+    }       
 }

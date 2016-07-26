@@ -25,7 +25,7 @@ public class PlayerStatus2 : MonoBehaviour{
 
     [SerializeField] StatusIndicator statusIndicator = null;              // Provides access to the StatusIndicator GameObject attached to the player.
     GameMaster gameMaster;                                                // References the GameMaster's script and prefab configurations. 
-    public HealthCalculator healthCalculator = new HealthCalculator();    // Obtains the numerical values from playerMaxHealth and playerCurrentHealth.  
+    public HealthCalculator healthCalculator = new HealthCalculator();    // HealthCalculator class is now accessible in other scripts and inspector.  
 
     [HideInInspector] public float lockingPlayerScale;                    // Obtains the Player's localScale when a collision occurs.
     [HideInInspector] bool playerHasCollided = false;                     // Tracks whenever the Player makes a collision with a hostile force.
@@ -33,14 +33,6 @@ public class PlayerStatus2 : MonoBehaviour{
     [HideInInspector] bool isInvincible = false;                          // Stays on for a period of time after a collision with an enemy or hazard.
     [SerializeField] float knockedBackTimer = 1.0f;                       // Sets a limit on when the Player should exit out of knockback.
     [SerializeField] float invincibilityTimer = 2.0f;                     // Sets a limit on when the Player should be able to take damage again.
-
-    void Awake() {
-        // If the Player is still recovering, don't add additional damage right now. 
-        if (isInvincible == false) {          
-            // Plays the PlayerHurt Audio.
-           // GetComponent<AudioSource>().Play();
-        }
-    }
 
     void Start() {
         // Immedaitely passes the numeric value within playerMaxHealth to playerCurrentHealth.
@@ -66,8 +58,7 @@ public class PlayerStatus2 : MonoBehaviour{
             // Player's health will decrease when colliding with another GameObject.      
             healthCalculator.playerCurrentHealth -= outsideDamage;
 
-            if (healthCalculator.playerCurrentHealth > 0)
-            {
+            if (healthCalculator.playerCurrentHealth > 0) {
                 // Plays the PlayerHurt Audio.
                 GetComponent<AudioSource>().Play();
             }
